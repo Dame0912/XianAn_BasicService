@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>菜单栏</title>
+<body>
+<div th:fragment="menuNav" class="sidebar-nav">
+    <ul>
+        <!--菜单一-->
+        <li>
+            <a href="#" data-target=".p2p-menu" class="nav-header" data-toggle="collapse">
+                <i class="fa fa-fw fa-dashboard"></i>
+                理财系统
+                <i class="fa fa-collapse"></i>
+            </a>
+        </li>
+        <li>
+            <ul class="p2p-menu nav nav-list collapse in">
+                <li>
+                    <a href="#" data-target=".p2p1-menu" class="collapse" data-toggle="collapse">
+                        <span class="fa fa-fw fa-caret-right"></span>
+                        系统测试
+                    </a>
+                </li>
+                <li>
+                    <ul class="p2p1-menu nav nav-list collapse">
+                        <li id="repayIndex">
+                            <a href="/test/repay/repayIndex.do">
+                                <span class="fa fa-fw"></span>
+                                还款测试
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <ul class="p2p-menu nav nav-list collapse in">
+                <li>
+                    <a href="#" data-target=".p2p2-menu" class="collapse" data-toggle="collapse">
+                        <span class="fa fa-fw fa-caret-right"></span>
+                        数据报送
+                    </a>
+                </li>
+                <li>
+                    <ul class="p2p2-menu nav nav-list collapse">
+                        <li id="nifaIndex">
+                            <a href="/nifa/nifaIndex.do">
+                                <span class="fa fa-fw"></span>
+                                中互金报送
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <!--
+        <li>
+            <ul class="p2p-menu nav nav-list collapse in">
+                <li>
+                    <a href="#">
+                        <span class="fa fa-fw fa-caret-right"></span> 。。。
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="fa fa-fw fa-caret-right"></span> 。。。
+                    </a>
+                </li>
+            </ul>
+        </li>
+        -->
+
+        <!--菜单二
+        <li data-popover="true" rel="popover" data-placement="right">
+            <a href="#" data-target=".premium-menu" class="nav-header collapsed" data-toggle="collapse">
+                <i class="fa fa-fw fa-fighter-jet"></i>
+                运营后台
+                <i class="fa fa-collapse"></i>
+            </a>
+        </li>
+        <li>
+            <ul class="premium-menu nav nav-list collapse">
+                <li>
+                    <a href="#">
+                        <span class="fa fa-fw fa-caret-right"></span> 。。。
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="fa fa-fw fa-caret-right"></span> 。。。
+                    </a>
+                </li>
+            </ul>
+        </li>
+        -->
+
+        <!-- 菜单三
+        <li>
+            <a href="#" data-target=".accounts-menu" class="nav-header collapsed" data-toggle="collapse">
+                <i class="fa fa-fw fa-briefcase"></i>
+                Account
+                <i class="fa fa-collapse"></i>
+            </a>
+        </li>
+
+        <li>
+            <ul class="accounts-menu nav nav-list collapse">
+                <li>
+                    <a href="#"><span class="fa fa-fw fa-caret-right"></span>Sign In</a>
+                </li>
+                <li>
+                    <a href="#"><span class="fa fa-fw fa-caret-right"></span>Sign Up</a>
+                </li>
+                <li>
+                    <a href="#"><span class="fa fa-fw fa-caret-right"></span>Reset Password</a>
+                </li>
+            </ul>
+        </li>
+        -->
+    </ul>
+</div>
+
+</body>
+</html>

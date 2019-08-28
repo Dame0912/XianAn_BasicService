@@ -1,0 +1,26 @@
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+	color: #fff;
+}
+
+input.date-time {
+	background: url(../images/calendar.gif) no-repeat right;
+}
+
+.info {
+	background: url(../images/receiving-goods-query.gif) no-repeat right;
+}
+
+#line-chart {
+	height: 300px;
+	width: 800px;
+	margin: 0px auto;
+	margin-top: 1em;
+}
+
+body{
+	font-size:13px;
+}
+
+ul.breadcrumb{
+	font-size:11px;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Basic Service</title>
+    <link th:href="@{'http://fonts.googleapis.com/css?family=Open+Sans:400,700'}" rel='stylesheet' type='text/css'>
+    <link th:href="@{~/assets/bootstrap/css/bootstrap.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/stylesheets/theme.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/stylesheets/premium.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/customer/common.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{~/assets/jquery-1.11.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{~/assets/jQuery-Knob/js/jquery.knob.js}" type="text/javascript"></script>
+    <script th:src="@{~/assets/bootstrap/js/bootstrap.js}" type="text/javascript"></script>
+</head>
+
+<body class="theme-blue">
+
+<div th:include="common/header :: headerNav" class="navbar navbar-default"></div>
+
+<div th:include="common/menu :: menuNav" class="sidebar-nav"></div>
+
+<div class="content">
+    <div class="header">
+        <h1 class="page-title">Basic Service</h1>
+        <ul class="breadcrumb">
+            <li><a href="./index.html">Home</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content" style="text-align: center; font-size: 20px; font-weight: bold;">欢 迎 ！！</div>
+
+    <footer th:include="common/footer :: footerNav"></footer>
+</div>
+
+</body>
+
+
+</html>

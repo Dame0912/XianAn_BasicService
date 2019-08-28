@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.p2p.test.repay.mapper.LoanOpAssetLoanMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.p2p.test.repay.bean.entities.LoanOpAssetLoan">
+        <result column="id" property="id"/>
+        <result column="loan_id" property="loanId"/>
+        <result column="loan_apply_no" property="loanApplyNo"/>
+        <result column="loan_biz_no" property="loanBizNo"/>
+        <result column="contract_no" property="contractNo"/>
+        <result column="apply_id" property="applyId"/>
+        <result column="loan_user_id" property="loanUserId"/>
+        <result column="related_loan_id" property="relatedLoanId"/>
+        <result column="raise_mode" property="raiseMode"/>
+        <result column="mobile" property="mobile"/>
+        <result column="money_plan_id" property="moneyPlanId"/>
+        <result column="rate_config_id" property="rateConfigId"/>
+        <result column="project_id" property="projectId"/>
+        <result column="asset_side_id" property="assetSideId"/>
+        <result column="money_side_id" property="moneySideId"/>
+        <result column="credit_side_id" property="creditSideId"/>
+        <result column="pack_mode" property="packMode"/>
+        <result column="loan_type" property="loanType"/>
+        <result column="product_type" property="productType"/>
+        <result column="loan_amount" property="loanAmount"/>
+        <result column="arrival_money" property="arrivalMoney"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="stage" property="stage"/>
+        <result column="periods" property="periods"/>
+        <result column="periods_type" property="periodsType"/>
+        <result column="interest_type" property="interestType"/>
+        <result column="status" property="status"/>
+        <result column="repay_type" property="repayType"/>
+        <result column="final_repay_date" property="finalRepayDate"/>
+        <result column="max_repay_date" property="maxRepayDate"/>
+        <result column="fixed_repay_date" property="fixedRepayDate"/>
+        <result column="lend_time" property="lendTime"/>
+        <result column="overdue_grace_period" property="overdueGracePeriod"/>
+        <result column="transit_days" property="transitDays"/>
+        <result column="sku_title" property="skuTitle"/>
+        <result column="sku_sku_rate" property="skuSkuRate"/>
+        <result column="can_repay_off_line" property="canRepayOffLine"/>
+        <result column="service_fee_single" property="serviceFeeSingle"/>
+        <result column="channel_fee_single" property="channelFeeSingle"/>
+        <result column="insurance_fee_single" property="insuranceFeeSingle"/>
+        <result column="can_repay_off_line" property="skuSkuRate"/>
+        <result column="sku_bonds_type" property="skuBondsType"/>
+        <result column="sku_platform_discount_type" property="skuPlatformDiscountType"/>
+        <result column="sku_start_raise_time" property="skuStartRaiseTime"/>
+        <result column="sku_end_raise_time" property="skuEndRaiseTime"/>
+        <result column="sku_min_invest" property="skuMinInvestAmount"/>
+        <result column="insurance_no" property="insuranceNo"/>
+        <result column="insure_type" property="insureType"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="money_side_code" property="moneySideCode"/>
+        <result column="plan_id" property="planId"/>
+        <result column="project_no" property="projectNo"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        loan_id, apply_id,loan_biz_no,contract_no, loan_user_id, related_loan_id, raise_mode, mobile, money_plan_id,rate_config_id, project_id, asset_side_id,money_side_id,
+        credit_side_id, pack_mode, loan_type, product_type, loan_amount, arrival_money, title,description, stage, periods, periods_type,
+        interest_type, `status`, repay_type, final_repay_date, fixed_repay_date, created_at, updated_at, lend_time,
+        overdue_grace_period, transit_days, sku_title, sku_sku_rate, sku_bonds_type, sku_platform_discount_type,
+        sku_start_raise_time, sku_end_raise_time, sku_min_invest_amount, sku_raise_full_condition_amount,can_repay_off_line,
+        service_fee_single,channel_fee_single,insurance_fee_single,loan_apply_no,insurance_no,insure_type,money_side_code,max_repay_date,plan_id,project_no
+    </sql>
+
+    <select id="getByApplyId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from loan_opuat_asset.loan WHERE apply_id = #{applyId} and status != 400
+    </select>
+
+</mapper>
