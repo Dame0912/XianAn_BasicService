@@ -2,7 +2,7 @@ package com.xinan.cn.common.controller.p2p.asset;
 
 import com.alibaba.fastjson.JSON;
 import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
-import com.xinan.cn.common.service.p2p.asset.intf.P2PLoanServiceIntf;
+import com.xinan.cn.common.service.p2p.asset.intf.P2PLoanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class P2PLoanController {
 
     @Autowired
-    private P2PLoanServiceIntf p2PLoanServiceIntf;
+    private P2PLoanService p2PLoanServiceIntf;
 
     @ResponseBody
     @RequestMapping("loanSimpleInfo.do")

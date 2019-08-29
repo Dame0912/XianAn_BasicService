@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class LoanSimpleInfoVO implements Serializable {
-    private String PrjName;//项目名称
+    private String prjName;//项目名称
     private String loanUserName;//贷款用户姓名
     private String loanName;//借款类型名称
     private Integer loanStatus;//借款状态
@@ -14,8 +14,8 @@ public class LoanSimpleInfoVO implements Serializable {
     private String p2pSkuId;
     private String p2pPlanId;
     private String p2pInvestPlanIds;
-    private String phpLoanId;
-    private String phpSkuId;
-    private String phpPlanId;
-    private String phpInvestPlanId;
+    private String fdLoanId;
+    private String fdSkuId;
+    private String fdPlanId;
+    private String fdInvestPlanId;
 }

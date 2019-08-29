@@ -14,7 +14,7 @@ import com.xinan.cn.common.mapper.fd.core.FDLoanSkuMapper;
 import com.xinan.cn.common.mapper.p2p.asset.P2PLoanMapper;
 import com.xinan.cn.common.mapper.p2p.financial.P2PLoansBaseMapper;
 import com.xinan.cn.common.mapper.p2p.trading.P2PPaybackPlanMapper;
-import com.xinan.cn.common.service.p2p.asset.intf.P2PLoanServiceIntf;
+import com.xinan.cn.common.service.p2p.asset.intf.P2PLoanService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class P2PLoanServiceImpl implements P2PLoanServiceIntf {
+public class P2PLoanServiceImpl implements P2PLoanService {
 
     @Autowired
     private P2PLoansBaseMapper p2pLoansBaseMapper;
@@ -60,10 +60,10 @@ public class P2PLoanServiceImpl implements P2PLoanServiceIntf {
         simpleLoanInfo.setP2pSkuId(String.valueOf(skuId));
         simpleLoanInfo.setP2pPlanId(String.valueOf(p2pLoan.getPlanId()));
         simpleLoanInfo.setP2pInvestPlanIds(p2pInvestPlanIds);
-        simpleLoanInfo.setPhpLoanId(String.valueOf(fdLoan.getLoanId()));
-        simpleLoanInfo.setPhpSkuId(String.valueOf(fdLoanSkuMapping.getSkuId()));
-        simpleLoanInfo.setPhpPlanId(String.valueOf(fdLoan.getPlanId()));
-        simpleLoanInfo.setPhpInvestPlanId(String.valueOf(phpInvestPlanId));
+        simpleLoanInfo.setFdLoanId(String.valueOf(fdLoan.getLoanId()));
+        simpleLoanInfo.setFdSkuId(String.valueOf(fdLoanSkuMapping.getSkuId()));
+        simpleLoanInfo.setFdPlanId(String.valueOf(fdLoan.getPlanId()));
+        simpleLoanInfo.setFdInvestPlanId(String.valueOf(phpInvestPlanId));
         return simpleLoanInfo;
     }
 }
