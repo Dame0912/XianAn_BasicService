@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.p2p.asset.P2PLoanMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.p2p.asset.P2PLoan">
+        <result column="id" property="id"/>
+        <result column="loan_id" property="loanId"/>
+        <result column="project_no" property="projectNo"/>
+        <result column="plan_id" property="planId"/>
+        <result column="loan_user_id" property="loanUserId"/>
+        <result column="loan_user_type" property="loanUserType"/>
+        <result column="loan_name" property="loanName"/>
+        <result column="loan_type" property="loanType"/>
+        <result column="loan_status" property="loanStatus"/>
+        <result column="loan_amount" property="loanAmount"/>
+        <result column="lend_amount" property="lendAmount"/>
+        <result column="raise_full_time" property="raiseFullTime"/>
+        <result column="loan_year_rate" property="loanYearRate"/>
+        <result column="duration" property="duration"/>
+        <result column="duration_type" property="durationType"/>
+        <result column="repay_type" property="repayType"/>
+        <result column="lend_time" property="lendTime"/>
+        <result column="guarantee_act_id" property="guaranteeActId"/>
+        <result column="claim_act_id" property="claimActId"/>
+        <result column="plat_act_id" property="platActId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <resultMap id="loanPlanMap" type="com.xinan.cn.common.bean.entities.p2p.asset.P2PLoan">
+        <result column="loan_id" property="loanId"/>
+        <result column="plan_id" property="planId"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        loan_id, project_no, plan_id, loan_user_id, loan_user_type, loan_name, loan_type, loan_status, loan_amount,
+        lend_amount, raise_full_time, loan_year_rate, duration, duration_type, repay_type, lend_time, guarantee_act_id,
+        claim_act_id,plat_act_id
+    </sql>
+
+    <select id="getByLoanId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_uat_asset.loan WHERE loan_id = #{loanId}
+    </select>
+
+</mapper>

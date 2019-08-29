@@ -10,7 +10,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @ComponentScan(basePackages = "com.xinan.cn")
 @MapperScan(basePackages = {
 		"com.xinan.cn.p2p.report.nifa.mapper",
-		"com.xinan.cn.p2p.test.repay.mapper"
+		"com.xinan.cn.common.mapper"
 })
 public class BasicServiceApplication {
 

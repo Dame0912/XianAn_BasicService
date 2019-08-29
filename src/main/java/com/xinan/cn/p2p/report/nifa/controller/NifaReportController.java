@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/nifa/")
+@RequestMapping("/report/nifa/")
 public class NifaReportController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class NifaReportController {
 
     @RequestMapping("nifaIndex.do")
     public String nifaIndex() {
-        return "nifa/nifaReportQuery";
+        return "p2p/report/nifa/nifaReportQuery";
     }
 
     @RequestMapping("nifaReportQuery.do")

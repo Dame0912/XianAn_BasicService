@@ -10,7 +10,7 @@ import com.xinan.cn.p2p.report.nifa.bean.entities.NifaPrjInfo;
 import com.xinan.cn.p2p.report.nifa.constant.*;
 import com.xinan.cn.p2p.report.nifa.mapper.NifaPrjInfoMapper;
 import com.xinan.cn.p2p.report.nifa.service.intf.NifaReportQueryService;
-import com.xinan.cn.service.BaseServiceAbstract;
+import com.xinan.cn.common.service.BaseServiceAbstract;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

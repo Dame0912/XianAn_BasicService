@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.fd.core.FDLoanSkuMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.fd.core.FDLoanSkuMapping">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="loan_id" property="loanId"/>
+        <result column="sku_id" property="skuId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id, loan_id, sku_id, created_at, updated_at,deleted_at
+	</sql>
+
+    <select id="getByLoanId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from loan_opuat_core.loan_sku_mapping WHERE loan_id = #{loanId} and deleted_at = 0
+    </select>
+
+
+</mapper>

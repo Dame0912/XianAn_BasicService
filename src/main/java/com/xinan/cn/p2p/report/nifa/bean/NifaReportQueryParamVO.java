@@ -1,6 +1,6 @@
 package com.xinan.cn.p2p.report.nifa.bean;
 
-import com.xinan.cn.bean.Page;
+import com.xinan.cn.common.bean.Page;
 import lombok.Data;
 
 import java.io.Serializable;

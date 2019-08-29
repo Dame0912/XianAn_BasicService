@@ -1,0 +1,403 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>还款测试</title>
+    <link th:href="@{'http://fonts.googleapis.com/css?family=Open+Sans:400,700'}" rel='stylesheet' type='text/css'>
+    <link th:href="@{~/assets/bootstrap/css/bootstrap.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/assets/font-awesome/css/font-awesome.css}" rel="stylesheet">
+    <link th:href="@{~/stylesheets/theme.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/stylesheets/premium.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{~/assets/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" media="screen">
+    <link th:href="@{~/customer/common.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{~/assets/jquery.js}" type="text/javascript"></script>
+    <script th:src="@{~/assets/bootstrap/js/bootstrap.js}"></script>
+    <link th:href="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.css}" rel="stylesheet">
+    <script th:src="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.js}"></script>
+    <script th:src="@{~/assets/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js}"></script>
+    <script th:src="@{~/assets/layer/layer.js}"></script>
+</head>
+<style type="text/css">
+
+    #searchForm input {
+        width: 200px;
+    }
+
+    .modal-body label {
+        font-weight: bold;
+        color: #750000;
+    }
+
+    .modal-content {
+        width: 1050px;
+    }
+
+    .form-inline .form-group {
+        margin-bottom: 10px;
+    }
+
+    .prjTitle {
+        font-size: 15px;
+        font-weight: bold;
+        color: #000079;
+        text-align: center;
+        background: #2894FF;
+    }
+</style>
+
+<body class=" theme-blue">
+
+<div th:include="common/header :: headerNav" class="navbar navbar-default"></div>
+
+<div th:include="common/menu :: menuNav" class="sidebar-nav"></div>
+
+<div class="content">
+    <div class="header">
+        <h1 class="page-title">还款测试</h1>
+        <ul class="breadcrumb">
+            <li><a th:href="@{~/index.html}">Home</a></li>
+            <li class="active">repayIndex</li>
+        </ul>
+    </div>
+    <div class="main-content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="searchForm" action="" class="form-inline" style="margin-bottom: 10px;">
+                    <div class="form-group" style="width: 300px;">
+                        <label>标的编号:</label>
+                        <input type="text" th:id="skuId" name="skuId" placeholder="请输入标的编号" class="form-control">
+                    </div>
+                    <div class="form-group btn-toolbar">
+                        <button class="btn btn-primary" id="searchBtn">查询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row" style="margin: 15px;">
+            <div class="col-md-13 col-sm-13 col-xs-13">
+                <table id="p2pPlanTable"></table>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row" style="margin: 15px;">
+            <div class="col-md-13 col-sm-13 col-xs-13">
+                <table id="p2pLoanTable"></table>
+            </div>
+        </div>
+
+        <footer th:include="common/footer :: footerNav"></footer>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    $(function () {
+        $("#repayIndex").addClass('active');
+        $("#repayIndex").parent().removeClass('collapse').addClass('collapsed');
+        new p2pPlanTableObj().Init();//初始化表格
+        new p2pLoanTableObj().Init();//初始化表格
+    });
+
+    var p2pPlanTableObj = function (url, dataParam) {
+        var p2pPlanTableInit = new Object();
+        //初始化Table
+        p2pPlanTableInit.Init = function () {
+            $('#p2pPlanTable').bootstrapTable('destroy');//先销毁表格
+            $('#p2pPlanTable').bootstrapTable({
+                url: url,
+                method: 'post', //请求方式
+                contentType: 'application/x-www-form-urlencoded',
+                responseHandler: function (res) {
+                    return {
+                        "total": res.total,
+                        "rows": res.data //数据
+                    };
+                },
+                queryParamsType: "undefined",
+                queryParams: function (params) {
+                    var param = {
+                        prjNum: dataParam.skuId,
+                        currentPage: params.pageNumber,
+                        pageSize: params.pageSize
+                    };
+                    return param;
+                },
+                columns: [
+                    {
+                        field: 'projectNo',
+                        title: '项目名称',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanName',
+                        title: '借款人',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'status',
+                        title: '借款人用户名',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanId',
+                        title: '借款编号',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanId',
+                        title: '标的编号',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'errorMsg',
+                        title: '项目类型',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'createdAt',
+                        title: '资产状态',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'updatedAt',
+                        title: '房贷借款编号',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'updatedAt',
+                        title: '房贷标的编号',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        title: "内容详情",
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return "<a role='button' data-toggle='modal'> <i class='fa fa-file'></i> </a>";
+                        }
+                    }],
+                sidePagination: 'server',//分页方式： client 客户端分页， server 服务端分页（*）
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
+                paginationPreText: '«',
+                paginationNextText: '»',
+                pagination: true, //是否显示分页（*）
+                striped: true, //是否显示行间隔色
+                clickToSelect: false, //是否启用点击选中行
+                showToggle: false, //是否显示详细视图和列表视图的切换按钮
+                onLoadSuccess: function (rsp) { //加载成功时执行
+                },
+                onLoadError: function () {
+                },
+                cache: false,// 不开启缓存
+                undefinedText: '---',// 当数据为 undefined 时显示的字符
+                sortable: false,
+                showColumns: true//显示下拉框勾选要显示的列
+            });
+        };
+        return p2pPlanTableInit;
+    };
+
+    function initP2pPlanTable(param) {
+        var tab = new p2pPlanTableObj("/report/nifa/nifaReportQuery.do", param);
+        tab.Init();
+    }
+
+    var p2pLoanTableObj = function (url, dataParam) {
+        var p2pLoanTableInit = new Object();
+        //初始化Table
+        p2pLoanTableInit.Init = function () {
+            $('#p2pLoanTable').bootstrapTable('destroy');//先销毁表格
+            $('#p2pLoanTable').bootstrapTable({
+                url: url,
+                method: 'post', //请求方式
+                contentType: 'application/x-www-form-urlencoded',
+                responseHandler: function (res) {
+                    console.log(res);
+                    return {
+                        data: new Array(res) //数据
+                    };
+                },
+                queryParamsType: "undefined",
+                queryParams: function (params) {
+                    var param = {
+                        skuId: dataParam.skuId
+                    };
+                    return param;
+                },
+                columns: [
+                    {
+                        field: 'prjName',
+                        title: '项目名称',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanUserName',
+                        title: '借款人',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanName',
+                        title: '类型',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'loanStatus',
+                        title: '借款状态',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false,
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "未知";
+                            }
+                            if ("1" == value) {
+                                return "形成资产";
+                            }
+                            if ("2" == value) {
+                                return "募集中";
+                            }
+                            if ("3" == value) {
+                                return "标的满标";
+                            }
+                            if ("4" == value) {
+                                return "标的流标";
+                            }
+                            if ("5" == value) {
+                                return "放款中";
+                            }
+                            if ("6" == value) {
+                                return "还款中";
+                            }
+                            if ("7" == value) {
+                                return "逾期";
+                            }
+                            if ("8" == value) {
+                                return "已结清";
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'p2pLoanId',
+                        title: '借款ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'p2pSkuId',
+                        title: '标的ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'p2pPlanId',
+                        title: '计划ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'p2pInvestPlanIds',
+                        title: '投资计划ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'phpLoanId',
+                        title: '房贷借款ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'phpSkuId',
+                        title: '房贷标的ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'phpPlanId',
+                        title: '房贷计划ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'phpInvestPlanId',
+                        title: '房贷投资计划ID',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        title: "内容详情",
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + row.p2pSkuId + "'> <i class='fa fa-file'></i> </a>";
+                        }
+                    }],
+                pagination: false, //是否显示分页（*）
+                onLoadSuccess: function (rsp) { //加载成功时执行
+                },
+                onLoadError: function () {
+                },
+                cache: false,// 不开启缓存
+                undefinedText: '---',// 当数据为 undefined 时显示的字符
+                sortable: false,
+                showColumns: true//显示下拉框勾选要显示的列
+            });
+        };
+        return p2pLoanTableInit;
+    };
+
+    function initP2pLoanTable(param) {
+        var tab = new p2pLoanTableObj("/p2p/loan/loanSimpleInfo.do", param);
+        tab.Init();
+    }
+
+    // 搜索
+    $('#searchBtn').on('click', function () {
+        var skuId = $.trim($("#skuId").val());
+        initP2pPlanTable({skuId: skuId});
+        initP2pLoanTable({skuId: skuId});
+    });
+
+</script>
+
+</html>
