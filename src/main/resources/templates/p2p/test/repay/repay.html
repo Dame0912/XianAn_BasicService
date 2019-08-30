@@ -18,6 +18,17 @@
     <script th:src="@{~/assets/layer/layer.js}"></script>
 </head>
 <style type="text/css">
+    .tableTitle {
+        text-align: center;
+        margin-bottom: -28px;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'SimHei';
+    }
+
+    .operatorBtn {
+        padding: 3px 6px;
+    }
 
     #searchForm input {
         width: 200px;
@@ -64,16 +75,19 @@
             </div>
         </div>
 
-        <hr>
         <div class="row" style="margin: 15px;">
             <div class="col-md-13 col-sm-13 col-xs-13">
+                <h3 class="tableTitle">计划信息表</h3>
                 <table id="p2pPlanTable"></table>
+                <div>
+                    <p id="tipsMsg" style="color: red;margin-top: 10px;"></p>
+                </div>
             </div>
         </div>
 
-        <hr>
         <div class="row" style="margin: 15px;">
             <div class="col-md-13 col-sm-13 col-xs-13">
+                <h3 class="tableTitle">资产信息表</h3>
                 <table id="p2pLoanTable"></table>
             </div>
         </div>
@@ -102,102 +116,225 @@
                 method: 'post', //请求方式
                 contentType: 'application/x-www-form-urlencoded',
                 responseHandler: function (res) {
+                    window.planTableMap = {};
+                    $.each(res, function (i, v) {
+                        window.planTableMap[i] = v;
+                        if (v.period == 1 && v.p2pPlanStatus == 30 && v.fdPlanStatus == 30) {
+                            window.planTableMap["firstPeriod"] = true;
+                        }
+                        if (v.p2pPlanStatus == 20 || v.fdPlanStatus == 20 || v.p2pPlanStatus == 21 || v.fdPlanStatus == 21) {
+                            window.planTableMap["process"] = true;
+                        }
+                        window.planTableMap["isAllowRepay"] = true;
+                    });
                     return {
-                        "total": res.total,
-                        "rows": res.data //数据
+                        data: res //数据
                     };
                 },
                 queryParamsType: "undefined",
                 queryParams: function (params) {
-                    var param = {
-                        prjNum: dataParam.skuId,
-                        currentPage: params.pageNumber,
-                        pageSize: params.pageSize
-                    };
-                    return param;
+                    return dataParam;
                 },
                 columns: [
                     {
-                        field: 'projectNo',
-                        title: '项目名称',
+                        field: 'period',
+                        title: '期数',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
-                        field: 'loanName',
-                        title: '借款人',
+                        field: 'planRepayDate',
+                        title: '计划还款日期',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            var date = new Date(Number(value));
+                            var y = date.getFullYear();
+                            var m = date.getMonth() + 1;
+                            m = m < 10 ? '0' + m : m;
+                            var d = date.getDate();
+                            d = d < 10 ? ('0' + d) : d;
+                            return y + '-' + m + '-' + d;
+                        }
                     }, {
-                        field: 'status',
-                        title: '借款人用户名',
+                        field: 'p2pPlanStatus',
+                        title: '计划状态',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "等待还款";
+                            }
+                            if ("10" == value) {
+                                return "还款失败";
+                            }
+                            if ("14" == value) {
+                                return "系统还款失败(不计罚息)";
+                            }
+                            if ("20" == value) {
+                                return "还款处理中";
+                            }
+                            if ("21" == value) {
+                                return "系统还款处理中(不计罚息)";
+                            }
+                            if ("30" == value) {
+                                return "还款成功";
+                            }
+                            if ("32" == value) {
+                                return "部分还款成功";
+                            }
+                            if ("51" == value) {
+                                return "已加速到期";
+                            }
+                            if ("52" == value) {
+                                return "已提前还款";
+                            }
+                            if ("53" == value) {
+                                return "已债转";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'loanId',
-                        title: '借款编号',
+                        field: 'p2pIsOverdue',
+                        title: '是否逾期',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "未逾期";
+                            }
+                            if ("1" == value) {
+                                return "已逾期";
+                            }
+                            if ("999" == value) {
+                                return "未知";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'loanId',
-                        title: '标的编号',
+                        field: 'p2pClaimStatus',
+                        title: '代偿状态',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "未触发代偿";
+                            }
+                            if ("10" == value) {
+                                return "已触发代偿";
+                            }
+                            if ("11" == value) {
+                                return "代偿处理中";
+                            }
+                            if ("12" == value) {
+                                return "代偿成功";
+                            }
+                            if ("14" == value) {
+                                return "代偿失败";
+                            }
+                            if ("999" == value) {
+                                return "未知";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'errorMsg',
-                        title: '项目类型',
+                        field: 'fdPlanStatus',
+                        title: '房贷计划状态',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "等待还款";
+                            }
+                            if ("10" == value) {
+                                return "还款失败";
+                            }
+                            if ("14" == value) {
+                                return "系统还款失败(不计罚息)";
+                            }
+                            if ("20" == value) {
+                                return "还款处理中";
+                            }
+                            if ("21" == value) {
+                                return "系统还款处理中(不计罚息)";
+                            }
+                            if ("30" == value) {
+                                return "还款成功";
+                            }
+                            if ("32" == value) {
+                                return "部分还款成功";
+                            }
+                            if ("51" == value) {
+                                return "已加速到期";
+                            }
+                            if ("52" == value) {
+                                return "已提前还款";
+                            }
+                            if ("53" == value) {
+                                return "已债转";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'createdAt',
-                        title: '资产状态',
+                        field: 'fdIsOverdue',
+                        title: '房贷是否逾期',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "未逾期";
+                            }
+                            if ("1" == value) {
+                                return "已逾期";
+                            }
+                            if ("999" == value) {
+                                return "未知";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'updatedAt',
-                        title: '房贷借款编号',
+                        field: 'fdClaimStatus',
+                        title: '房贷代偿状态',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "未触发代偿";
+                            }
+                            if ("10" == value) {
+                                return "已触发代偿";
+                            }
+                            if ("11" == value) {
+                                return "代偿处理中";
+                            }
+                            if ("12" == value) {
+                                return "代偿成功";
+                            }
+                            if ("14" == value) {
+                                return "代偿失败";
+                            }
+                            if ("999" == value) {
+                                return "未知";
+                            }
+                            return "";
+                        }
                     }, {
-                        field: 'updatedAt',
-                        title: '房贷标的编号',
+                        title: '操作',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        formatter: function (value, row, index) {
+                            return operatorShow(value, row, index);
+                        }
                     }, {
                         title: "内容详情",
                         align: 'center',
                         valign: 'middle',
                         formatter: function (value, row, index) {
-                            return "<a role='button' data-toggle='modal'> <i class='fa fa-file'></i> </a>";
+                            var skuId = $.trim($("#skuId").val());
+                            return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + skuId + "'> <i class='fa fa-file'></i> </a>";
                         }
                     }],
-                sidePagination: 'server',//分页方式： client 客户端分页， server 服务端分页（*）
-                pageNumber: 1, //初始化加载第一页，默认第一页
-                pageSize: 10, //每页的记录行数（*）
-                pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
-                paginationPreText: '«',
-                paginationNextText: '»',
-                pagination: true, //是否显示分页（*）
+                pagination: false, //是否显示分页（*）
                 striped: true, //是否显示行间隔色
-                clickToSelect: false, //是否启用点击选中行
-                showToggle: false, //是否显示详细视图和列表视图的切换按钮
                 onLoadSuccess: function (rsp) { //加载成功时执行
                 },
                 onLoadError: function () {
@@ -212,7 +349,7 @@
     };
 
     function initP2pPlanTable(param) {
-        var tab = new p2pPlanTableObj("/report/nifa/nifaReportQuery.do", param);
+        var tab = new p2pPlanTableObj("/plan/periodPlanSimpleInfo.do", param);
         tab.Init();
     }
 
@@ -243,30 +380,22 @@
                         field: 'prjName',
                         title: '项目名称',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'loanUserName',
                         title: '借款人',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'loanName',
                         title: '类型',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'loanStatus',
                         title: '借款状态',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false,
                         formatter: function (value, row, index) {
                             if ("0" == value) {
                                 return "未知";
@@ -301,58 +430,42 @@
                         field: 'fdLoanId',
                         title: '借款ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdSkuId',
                         title: '标的ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdPlanId',
                         title: '计划ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'p2pInvestPlanIds',
                         title: '投资计划ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdLoanId',
                         title: '房贷借款ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdSkuId',
                         title: '房贷标的ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdPlanId',
                         title: '房贷计划ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         field: 'fdInvestPlanId',
                         title: '房贷投资计划ID',
                         align: 'center',
-                        halign: 'center',
                         valign: 'middle',
-                        sortable: false
                     }, {
                         title: "内容详情",
                         align: 'center',
@@ -363,6 +476,8 @@
                     }],
                 pagination: false, //是否显示分页（*）
                 onLoadSuccess: function (rsp) { //加载成功时执行
+                    //请求计划信息
+                    initP2pPlanTable(rsp.data[0]);
                 },
                 onLoadError: function () {
                 },
@@ -382,10 +497,76 @@
 
     // 搜索
     $('#searchBtn').on('click', function () {
+        $("#tipsMsg").text("");
         var skuId = $.trim($("#skuId").val());
-        initP2pPlanTable({skuId: skuId});
         initP2pLoanTable({skuId: skuId});
     });
+
+    function operatorShow(value, row, index) {
+        var operator;
+        // 有处理中的不允许还款
+        if (planTableMap["process"]) {
+            $("#tipsMsg").text("说明：有正在 \"处理中\" 的还款！");
+            return;
+        }
+
+        // 第一期需要还款
+        if (index === 0) {
+            if (!planTableMap["firstPeriod"]) {
+                planTableMap["isAllowRepay"] = false;
+                return operator = "<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
+            }
+            return;
+        }
+
+        if (!planTableMap["isAllowRepay"]) {
+            return;
+        }
+
+        // 如果存在非待处理的则不展示标签按钮
+        if (row.p2pPlanStatus === 0 && row.fdPlanStatus === 0) {
+            operator = "<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
+            if (row.p2pIsOverdue === 0 && row.fdIsOverdue === 0) {
+                operator = operator + "&nbsp;&nbsp;<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='overdue(" + JSON.stringify(row) + ")'>逾期</button>";
+            }
+            if (row.p2pClaimStatus === 0 && row.fdClaimStatus === 0) {
+                operator = operator + "&nbsp;&nbsp;<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='compenRepay(" + JSON.stringify(row) + ")'>代偿</button>";
+            }
+            return operator;
+        } else if (row.p2pPlanStatus === 30 && row.fdPlanStatus === 30) {
+            return;
+        } else {
+            $("#tipsMsg").text("说明：还款状态不是 \"等待还款\" ！");
+            planTableMap["isAllowRepay"] = false;
+            return;
+        }
+        return operator;
+    }
+
+    // 本人还款
+    function ownRepay(param) {
+        $.ajax({
+            url: '/test/repay/ownRepay.do',
+            type: 'POST',
+            data: param,
+            success: function (data) {
+                console.log("data:", data);
+            },
+            error: function () {
+                alert("失败");
+            }
+        });
+    }
+
+    // 逾期
+    function overdue(param) {
+
+    }
+
+    // 代偿还款
+    function compenRepay(param) {
+
+    }
 
 </script>
 

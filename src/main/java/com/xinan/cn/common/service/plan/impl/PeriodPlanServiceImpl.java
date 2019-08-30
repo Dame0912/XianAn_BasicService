@@ -22,15 +22,19 @@ public class PeriodPlanServiceImpl implements PeriodPlanService {
     @Autowired
     private PeriodPlanMapper periodPlanMapper;
 
-
     @Override
-    public AllPeriodsPlan getAllPlanBySkuId(Long skuId) {
-        LoanSimpleInfoVO loanSimpleInfo = p2PLoanService.getLoanSimpleInfo(skuId);
+    public AllPeriodsPlan getAllPlan(Long skuId, LoanSimpleInfoVO... loanSimpleInfoVO) {
+        LoanSimpleInfoVO loanSimpleInfo;
+        if (null == loanSimpleInfoVO) {
+            loanSimpleInfo = p2PLoanService.getLoanSimpleInfo(skuId);
+        } else {
+            loanSimpleInfo = loanSimpleInfoVO[0];
+        }
         //P2P
         Long p2pPlanId = Long.parseLong(loanSimpleInfo.getP2pPlanId());
         List<PeriodPlan> p2pPeriodPlans = periodPlanMapper.listPlan(p2pPlanId);
         //P2P投资
-        String[] p2pInvestPlanIds = loanSimpleInfo.getP2pInvestPlanIds().split(SymbolsConst.JOIN_SYMBOL);
+        String[] p2pInvestPlanIds = loanSimpleInfo.getP2pInvestPlanIds().split(SymbolsConst.VERTICAL_SEPARATOR);
         Map<Long, List<PeriodPlan>> p2pInvestPeriodPlans = new HashMap<>();
         for (String p2pInvestPlanId : p2pInvestPlanIds) {
             Long investPlanId = Long.parseLong(p2pInvestPlanId);

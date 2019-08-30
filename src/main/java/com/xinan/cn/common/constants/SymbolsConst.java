@@ -12,5 +12,5 @@ public class SymbolsConst {
     /**
      * 连接符
      */
-    public static final String JOIN_SYMBOL = "^";
+    public static final String JOIN_SYMBOL = "\\^";
 }

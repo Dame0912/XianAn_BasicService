@@ -45,7 +45,7 @@ public class P2PLoanServiceImpl implements P2PLoanService {
         P2PLoan p2pLoan = p2pLoanMapper.getByLoanId(p2pLoansBase.getLoanId());
         List<P2PPaybackPlan> p2pPaybackPlanList = p2pPaybackPlanMapper.findListBySkuId(skuId);
         List<Long> p2pInvestPlanIdList = p2pPaybackPlanList.stream().map(P2PPaybackPlan::getPlanId).collect(Collectors.toList());
-        String p2pInvestPlanIds = StringUtils.join(p2pInvestPlanIdList, SymbolsConst.JOIN_SYMBOL);
+        String p2pInvestPlanIds = StringUtils.join(p2pInvestPlanIdList, "|");
         FDLoan fdLoan = fdLoanMapper.getByApplyId(String.valueOf(p2pLoansBase.getLoanApplyNo()));
         FDLoanSkuMapping fdLoanSkuMapping = fdLoanSkuMapper.getByLoanId(fdLoan.getLoanId());
         FDInvest fdInvest = fdInvestMapper.getBySkuId(fdLoanSkuMapping.getSkuId());

@@ -1,5 +1,6 @@
 package com.xinan.cn.common.service.plan.intf;
 
+import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
 import com.xinan.cn.common.bean.dto.plan.PeriodPlanVO;
 import com.xinan.cn.common.bean.entities.plan.PeriodPlan;
 
@@ -15,5 +16,5 @@ public interface PeriodPlanManageService {
     /**
      * 查询出页面展示的计划信息
      */
-    PeriodPlanVO getPeriodPlanVO(Long skuId);
+    List<PeriodPlanVO> getPeriodPlanVO(LoanSimpleInfoVO loanSimpleInfoVO);
 }

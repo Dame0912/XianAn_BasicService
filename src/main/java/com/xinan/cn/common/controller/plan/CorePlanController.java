@@ -1,6 +1,7 @@
 package com.xinan.cn.common.controller.plan;
 
 import com.alibaba.fastjson.JSON;
+import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
 import com.xinan.cn.common.bean.dto.plan.PeriodPlanVO;
 import com.xinan.cn.common.service.plan.intf.PeriodPlanManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
- * @Description 计划信息
+ * 计划信息展示
+ *
  * @Author lyq
  **/
 @Slf4j
@@ -24,10 +27,10 @@ public class CorePlanController {
 
     @ResponseBody
     @RequestMapping("periodPlanSimpleInfo.do")
-    public PeriodPlanVO loanSimpleInfo(HttpServletRequest request) {
-        Long skuId = Long.valueOf(request.getParameter("skuId"));
-        PeriodPlanVO periodPlanVO = periodPlanManageService.getPeriodPlanVO(skuId);
-        log.info("periodPlanVO:" + JSON.toJSONString(periodPlanVO));
-        return periodPlanVO;
+    public List<PeriodPlanVO> loanSimpleInfo(LoanSimpleInfoVO loanSimpleInfoVO) {
+        log.info(":" + JSON.toJSONString(loanSimpleInfoVO));
+        List<PeriodPlanVO> periodPlanVOList = periodPlanManageService.getPeriodPlanVO(loanSimpleInfoVO);
+        log.info("periodPlanVOList:" + JSON.toJSONString(periodPlanVOList));
+        return periodPlanVOList;
     }
 }
