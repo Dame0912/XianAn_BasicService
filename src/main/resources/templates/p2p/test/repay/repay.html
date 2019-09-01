@@ -92,6 +92,13 @@
             </div>
         </div>
 
+        <div class="row" style="margin: 15px;">
+            <div class="col-md-13 col-sm-13 col-xs-13">
+                <h3 class="tableTitle">对账步骤表</h3>
+                <table id="dealStepTable"></table>
+            </div>
+        </div>
+
         <footer th:include="common/footer :: footerNav"></footer>
     </div>
 </div>
@@ -102,10 +109,12 @@
     $(function () {
         $("#repayIndex").addClass('active');
         $("#repayIndex").parent().removeClass('collapse').addClass('collapsed');
-        new p2pPlanTableObj().Init();//初始化表格
-        new p2pLoanTableObj().Init();//初始化表格
+        new p2pPlanTableObj().Init();//初始化计划表格
+        new p2pLoanTableObj().Init();//初始化资产表格
+        new dealStepTableObj().Init();//初始化步骤表格
     });
 
+    // 计划表格
     var p2pPlanTableObj = function (url, dataParam) {
         var p2pPlanTableInit = new Object();
         //初始化Table
@@ -147,13 +156,8 @@
                         align: 'center',
                         valign: 'middle',
                         formatter: function (value, row, index) {
-                            var date = new Date(Number(value));
-                            var y = date.getFullYear();
-                            var m = date.getMonth() + 1;
-                            m = m < 10 ? '0' + m : m;
-                            var d = date.getDate();
-                            d = d < 10 ? ('0' + d) : d;
-                            return y + '-' + m + '-' + d;
+                            return formatTime(Number(value), 'Y-M-D');
+
                         }
                     }, {
                         field: 'p2pPlanStatus',
@@ -348,11 +352,13 @@
         return p2pPlanTableInit;
     };
 
+    // 计划表格
     function initP2pPlanTable(param) {
         var tab = new p2pPlanTableObj("/plan/periodPlanSimpleInfo.do", param);
         tab.Init();
     }
 
+    // 资产表格
     var p2pLoanTableObj = function (url, dataParam) {
         var p2pLoanTableInit = new Object();
         //初始化Table
@@ -363,7 +369,8 @@
                 method: 'post', //请求方式
                 contentType: 'application/x-www-form-urlencoded',
                 responseHandler: function (res) {
-                    console.log(res);
+                    window.loanTableMap = {};
+                    window.loanTableMap["loanSimpleInfoVO"] = res;
                     return {
                         data: new Array(res) //数据
                     };
@@ -377,13 +384,24 @@
                 },
                 columns: [
                     {
+                        field: 'loanBaseId',
+                        title: '借款ID<br>(loansBaseId)',
+                        align: 'center',
+                        valign: 'middle',
+                    },
+                    {
                         field: 'prjName',
                         title: '项目名称',
                         align: 'center',
                         valign: 'middle',
                     }, {
-                        field: 'loanUserName',
+                        field: 'realName',
                         title: '借款人',
+                        align: 'center',
+                        valign: 'middle',
+                    }, {
+                        field: 'userName',
+                        title: '用户名',
                         align: 'center',
                         valign: 'middle',
                     }, {
@@ -393,7 +411,7 @@
                         valign: 'middle',
                     }, {
                         field: 'loanStatus',
-                        title: '借款状态',
+                        title: '资产状态',
                         align: 'center',
                         valign: 'middle',
                         formatter: function (value, row, index) {
@@ -427,43 +445,43 @@
                             return "";
                         }
                     }, {
-                        field: 'fdLoanId',
-                        title: '借款ID',
+                        field: 'p2pLoanId',
+                        title: '资产ID (loanId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
-                        field: 'fdSkuId',
-                        title: '标的ID',
+                        field: 'p2pSkuId',
+                        title: '标的ID (skuId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
-                        field: 'fdPlanId',
-                        title: '计划ID',
+                        field: 'p2pPlanId',
+                        title: '计划ID (planId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
                         field: 'p2pInvestPlanIds',
-                        title: '投资计划ID',
+                        title: '投资计划ID (planId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
                         field: 'fdLoanId',
-                        title: '房贷借款ID',
+                        title: '房贷资产ID (loanId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
                         field: 'fdSkuId',
-                        title: '房贷标的ID',
+                        title: '房贷标的ID (skuId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
                         field: 'fdPlanId',
-                        title: '房贷计划ID',
+                        title: '房贷计划ID (planId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
                         field: 'fdInvestPlanId',
-                        title: '房贷投资计划ID',
+                        title: '房贷投资计划ID (planId)',
                         align: 'center',
                         valign: 'middle',
                     }, {
@@ -490,18 +508,146 @@
         return p2pLoanTableInit;
     };
 
+    // 资产表格
     function initP2pLoanTable(param) {
         var tab = new p2pLoanTableObj("/p2p/loan/loanSimpleInfo.do", param);
         tab.Init();
     }
 
+    // 对账步骤表格
+    var dealStepTableObj = function (url, dataParam) {
+        var dealStepTableInit = new Object();
+        //初始化Table
+        dealStepTableInit.Init = function () {
+            $('#dealStepTable').bootstrapTable('destroy');//先销毁表格
+            $('#dealStepTable').bootstrapTable({
+                url: url,
+                method: 'post', //请求方式
+                contentType: 'application/x-www-form-urlencoded',
+                responseHandler: function (res) {
+                    return {
+                        data: res //数据
+                    };
+                },
+                queryParamsType: "undefined",
+                queryParams: function (params) {
+                    return dataParam;
+                },
+                columns: [
+                    {
+                        field: 'dealType',
+                        title: '交易类型',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'businessId',
+                        title: '业务id',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'step',
+                        title: '当前步骤',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'stepStatus',
+                        title: '当前步骤状态',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "处理中";
+                            }
+                            if ("1" == value) {
+                                return "失败";
+                            }
+                            if ("2" == value) {
+                                return "成功";
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'status',
+                        title: '总状态',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            if ("0" == value) {
+                                return "处理中";
+                            }
+                            if ("1" == value) {
+                                return "失败";
+                            }
+                            if ("2" == value) {
+                                return "成功";
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'createdAt',
+                        title: '创建时间',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return formatTime(value, 'Y-M-D h:m:s');
+                        }
+                    }, {
+                        field: 'updatedAt',
+                        title: '更新时间',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return formatTime(value, 'Y-M-D h:m:s');
+                        }
+                    }, {
+                        field: 'retryTimes',
+                        title: '重试次数',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'errorCode',
+                        title: '错误码',
+                        align: 'center',
+                        valign: 'middle'
+                    }, {
+                        field: 'errorMsg',
+                        title: '错误信息',
+                        align: 'center',
+                        valign: 'middle'
+                    }],
+                pagination: false, //是否显示分页（*）
+                striped: true, //是否显示行间隔色
+                onLoadSuccess: function (rsp) { //加载成功时执行
+                },
+                onLoadError: function () {
+                },
+                cache: false,// 不开启缓存
+                undefinedText: '---',// 当数据为 undefined 时显示的字符
+                sortable: false,
+                showColumns: true//显示下拉框勾选要显示的列
+            });
+        };
+        return dealStepTableInit;
+    };
+
+    // 对账步骤表格
+    function initDealStepTable(param) {
+        var tab = new dealStepTableObj("/p2p/account/dealStepStatusInfo.do", param);
+        tab.Init();
+    }
+
+    // 搜索按钮点击
+    $('#searchBtn').on('click', searchInfo);
+
     // 搜索
-    $('#searchBtn').on('click', function () {
+    function searchInfo() {
         $("#tipsMsg").text("");
         var skuId = $.trim($("#skuId").val());
         initP2pLoanTable({skuId: skuId});
-    });
+        initDealStepTable({skuId: skuId});
+    }
 
+    // 计划表单，按钮展示处理
     function operatorShow(value, row, index) {
         var operator;
         // 有处理中的不允许还款
@@ -545,27 +691,92 @@
 
     // 本人还款
     function ownRepay(param) {
+        var loadingIndex = null;
         $.ajax({
             url: '/test/repay/ownRepay.do',
             type: 'POST',
-            data: param,
+            data: {
+                "periodPlanVO": JSON.stringify(param),
+                "loanSimpleInfoVO": JSON.stringify(loanTableMap["loanSimpleInfoVO"])
+            },
+            beforeSend: function () {
+                loadingIndex = layer.load(2, {time: 10 * 1000});
+            },
             success: function (data) {
-                console.log("data:", data);
+                layer.close(loadingIndex);
+                if (data.isSuccess) {
+                    layer.confirm(data.tipMsg, {icon: 1, title: '支付提示', btn: ['去支付', '关闭窗口']}, function (cindex) {
+                        window.open(data.redirectUrl);
+                        //layer.close(cindex);
+                    }, function (cindex) {
+                        layer.close(cindex);
+                    });
+                } else {
+                    layer.msg("申请还款异常！", {time: 3000, icon: 5, shift: 6});
+                }
             },
             error: function () {
-                alert("失败");
+                layer.close(loadingIndex);
+                layer.msg("申请还款失败！", {time: 3000, icon: 5, shift: 6});
             }
         });
     }
 
     // 逾期
     function overdue(param) {
-
+        var loadingIndex = null;
+        $.ajax({
+            url: '/test/repay/overdue.do',
+            type: 'POST',
+            data: {
+                "periodPlanVO": JSON.stringify(param),
+                "loanSimpleInfoVO": JSON.stringify(loanTableMap["loanSimpleInfoVO"])
+            },
+            beforeSend: function () {
+                loadingIndex = layer.load(2, {time: 10 * 1000});
+            },
+            success: function (data) {
+                layer.close(loadingIndex);
+                if (data.isSuccess) {
+                    layer.msg("申请逾期成功！", {time: 3000, icon: 6, shift: 5});
+                    searchInfo();
+                } else {
+                    layer.msg("申请逾期异常！", {time: 3000, icon: 5, shift: 6});
+                }
+            },
+            error: function () {
+                layer.close(loadingIndex);
+                layer.msg("申请逾期失败！", {time: 3000, icon: 5, shift: 6});
+            }
+        });
     }
 
     // 代偿还款
     function compenRepay(param) {
 
+    }
+
+    // 日期处理，timestamp为毫秒的时间戳数字
+    function formatTime(timestamp, format) {
+        var time = new Date(timestamp);
+        var newArr = [];
+        var formatArr = ['Y', 'M', 'D', 'h', 'm', 's']
+        newArr.push(time.getFullYear())
+        newArr.push(formatNumber(time.getMonth() + 1))
+        newArr.push(formatNumber(time.getDate()))
+        newArr.push(formatNumber(time.getHours()))
+        newArr.push(formatNumber(time.getMinutes()))
+        newArr.push(formatNumber(time.getSeconds()))
+        for (var i in newArr) {
+            format = format.replace(formatArr[i], newArr[i])
+        }
+        return format;
+    }
+
+    // 日期格式
+    function formatNumber(n) {
+        n = n.toString()
+        return n[1] ? n : '0' + n;
     }
 
 </script>

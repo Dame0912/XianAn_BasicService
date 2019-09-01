@@ -34,11 +34,14 @@
         <result column="is_calc_penalty_in_festival" property="IsCalcPenaltyInFestival" jdbcType="INTEGER"/>
         <result column="is_allow_pre_repay" property="isAllowPreRepay" jdbcType="INTEGER"/>
         <result column="pre_repay_min_period" property="preRepayMinPeriod" jdbcType="INTEGER"/>
-        <result column="is_calc_pre_repay_interest_by_used_days" property="isCalcPreRepayInterestByUsedDays" jdbcType="INTEGER"/>
-        <result column="is_calc_current_center_service_by_used_days" property="isCalcCurrentCenterServiceByUsedDays" jdbcType="INTEGER"/>
+        <result column="is_calc_pre_repay_interest_by_used_days" property="isCalcPreRepayInterestByUsedDays"
+                jdbcType="INTEGER"/>
+        <result column="is_calc_current_center_service_by_used_days" property="isCalcCurrentCenterServiceByUsedDays"
+                jdbcType="INTEGER"/>
         <result column="pre_repay_other_fee_repay_type" property="preRepayOtherFeeRepayType" jdbcType="INTEGER"/>
         <result column="pre_repay_calc_method" property="preRepayCalcMethod" jdbcType="INTEGER"/>
-        <result column="pre_repay_additional_interest_period" property="preRepayAdditionalInterestPeriod" jdbcType="INTEGER"/>
+        <result column="pre_repay_additional_interest_period" property="preRepayAdditionalInterestPeriod"
+                jdbcType="INTEGER"/>
         <result column="is_allow_acc" property="isAllowAcc" jdbcType="INTEGER"/>
         <result column="acc_interest_charge" property="accInterestCharge" jdbcType="INTEGER"/>
         <result column="acc_fixed_interest_amount" property="accFixedInterestAmount" jdbcType="BIGINT"/>
@@ -73,6 +76,22 @@
             </if>
         </set>
         where plan_id = #{planId}
-  </update>
+    </update>
+
+    <update id="batchUpdateLastCheckTime" parameterType="java.util.HashMap">
+        update xinan_uat_core_plan.plan_config
+        <set>
+            <if test="lastCheckTime != null">
+                last_check_time = #{lastCheckTime},
+            </if>
+            <if test="isAllowAheadRepay != null">
+                is_allow_ahead_repay = #{isAllowAheadRepay},
+            </if>
+        </set>
+        where plan_id in
+        <foreach collection="planIds" item="planId" index="index" open="(" close=")" separator=",">
+            #{planId}
+        </foreach>
+    </update>
 
 </mapper>

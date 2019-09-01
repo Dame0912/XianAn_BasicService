@@ -1,6 +1,5 @@
 package com.xinan.cn.common.controller.p2p.asset;
 
-import com.alibaba.fastjson.JSON;
 import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
 import com.xinan.cn.common.service.p2p.asset.intf.P2PLoanService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +20,13 @@ import javax.servlet.http.HttpServletRequest;
 public class P2PLoanController {
 
     @Autowired
-    private P2PLoanService p2PLoanServiceIntf;
+    private P2PLoanService p2PLoanService;
 
     @ResponseBody
     @RequestMapping("loanSimpleInfo.do")
     public LoanSimpleInfoVO loanSimpleInfo(HttpServletRequest request) {
         Long skuId = Long.valueOf(request.getParameter("skuId"));
-        LoanSimpleInfoVO loanSimpleInfoVO = p2PLoanServiceIntf.getLoanSimpleInfo(skuId);
-        log.info("loanSimpleInfoVO:" + JSON.toJSONString(loanSimpleInfoVO));
+        LoanSimpleInfoVO loanSimpleInfoVO = p2PLoanService.getLoanSimpleInfo(skuId);
         return loanSimpleInfoVO;
     }
 }

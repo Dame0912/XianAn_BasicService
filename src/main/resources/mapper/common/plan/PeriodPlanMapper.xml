@@ -23,7 +23,8 @@
         plan_id, period, plan_repay_date, plan_status, request_source, overdue_grace_period, claim_grace_period, is_overdue, claim_status, version, id, created_at, updated_at, deleted_at
     </sql>
 
-    <select id="getOnePeriodPlan" parameterType="com.xinan.cn.common.bean.entities.plan.PeriodPlan" resultMap="BaseResultMap">
+    <select id="getOnePeriodPlan" parameterType="com.xinan.cn.common.bean.entities.plan.PeriodPlan"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from xinan_uat_core_plan.period_plan where plan_id = #{planId} and period = #{period}
@@ -54,5 +55,16 @@
         where plan_id = #{planId} and period = #{period}
     </update>
 
+    <select id="queryOverdueAndNoRepayWithPeriod" resultType="java.lang.Integer">
+        select
+        period
+        from xinan_uat_core_plan.period_plan
+        where plan_id = #{planId}
+        and is_overdue = 1
+        and plan_status = 0
+        <![CDATA[
+            AND period <= #{period}
+        ]]>
+    </select>
 
 </mapper>

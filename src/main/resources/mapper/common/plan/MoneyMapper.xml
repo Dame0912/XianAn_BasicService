@@ -23,6 +23,15 @@
         plan_id, period, plan_amount, balance, actual_amount, money_type, last_repay_time, receiver_type, generate_log, version, id, created_at, updated_at, deleted_at
     </sql>
 
+    <select id="queryOverdueMoney" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_uat_core_plan.money
+        where plan_id = #{planId}
+        AND period = #{period}
+        AND money_type NOT IN (100, 200, 322)
+    </select>
+
     <insert id="insertOne" parameterType="com.xinan.cn.common.bean.entities.plan.Money">
         INSERT INTO xinan_uat_core_plan.money (
             plan_id,

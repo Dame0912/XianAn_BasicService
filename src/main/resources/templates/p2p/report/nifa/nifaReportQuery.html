@@ -12,8 +12,10 @@
     <link th:href="@{~/customer/common.css}" rel="stylesheet" type="text/css">
     <script th:src="@{~/assets/jquery.js}" type="text/javascript"></script>
     <script th:src="@{~/assets/bootstrap/js/bootstrap.js}"></script>
-    <script th:src="@{~/assets/bootstrap/js/bootstrap-datetimepicker.js}" type="text/javascript" charset="UTF-8"></script>
-    <script th:src="@{~/assets/bootstrap/js/bootstrap-datetimepicker.zh-CN.js}" type="text/javascript" charset="UTF-8"></script>
+    <script th:src="@{~/assets/bootstrap/js/bootstrap-datetimepicker.js}" type="text/javascript"
+            charset="UTF-8"></script>
+    <script th:src="@{~/assets/bootstrap/js/bootstrap-datetimepicker.zh-CN.js}" type="text/javascript"
+            charset="UTF-8"></script>
     <link th:href="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.css}" rel="stylesheet">
     <script th:src="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.js}"></script>
     <script th:src="@{~/assets/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js}"></script>
@@ -844,7 +846,7 @@
         var startTime = $('#startTime').val();
         var endTime = $('#endTime').val();
         if (startTime > endTime) {
-            layer.alert("起始时间不可以大于结束时间！");
+            layer.alert("起始时间不可以大于结束时间！", {title: '提示', icon: 5, shift: 6});
             return false;
         }
         initTable({

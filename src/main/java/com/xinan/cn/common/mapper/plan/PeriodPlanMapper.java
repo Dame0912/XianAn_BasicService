@@ -20,4 +20,6 @@ public interface PeriodPlanMapper {
      * 获取全部计划
      */
     List<PeriodPlan> listPlan(Long planId);
+
+    List<Integer> queryOverdueAndNoRepayWithPeriod(PeriodPlan periodPlan);
 }
