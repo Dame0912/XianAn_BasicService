@@ -3,8 +3,8 @@ package com.xinan.cn.p2p.test.repay.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
 import com.xinan.cn.common.bean.dto.plan.PeriodPlanVO;
+import com.xinan.cn.p2p.test.repay.service.impl.AbstractRepay;
 import com.xinan.cn.p2p.test.repay.service.intf.OverdueService;
-import com.xinan.cn.p2p.test.repay.service.intf.RepayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,7 +28,11 @@ public class RepayController {
 
     @Autowired
     @Qualifier("repayOwnServiceImpl")
-    private RepayService repayOwnServiceImpl;//本人还款
+    private AbstractRepay repayOwnServiceImpl;//本人还款
+
+    @Autowired
+    @Qualifier("repayCompenServiceImpl")
+    private AbstractRepay repayCompenServiceImpl;//代偿还款
 
     @Autowired
     private OverdueService overdueService;
@@ -49,7 +53,7 @@ public class RepayController {
         String loanSimpleInfoStr = request.getParameter("loanSimpleInfoVO");
         PeriodPlanVO periodPlanVO = JSONObject.parseObject(periodPlanStr, PeriodPlanVO.class);
         LoanSimpleInfoVO loanSimpleInfoVO = JSONObject.parseObject(loanSimpleInfoStr, LoanSimpleInfoVO.class);
-        Map<String, Object> resultMap = repayOwnServiceImpl.repay(periodPlanVO, loanSimpleInfoVO);
+        Map<String, Object> resultMap = buildReturnMap(repayOwnServiceImpl.repay(periodPlanVO, loanSimpleInfoVO));
         log.info("RepayController.repayIndex,个人还款结束");
         return resultMap;
     }
@@ -65,14 +69,35 @@ public class RepayController {
         String loanSimpleInfoStr = request.getParameter("loanSimpleInfoVO");
         PeriodPlanVO periodPlanVO = JSONObject.parseObject(periodPlanStr, PeriodPlanVO.class);
         LoanSimpleInfoVO loanSimpleInfoVO = JSONObject.parseObject(loanSimpleInfoStr, LoanSimpleInfoVO.class);
+        Map<String, Object> resultMap = buildReturnMap(overdueService.overdue(periodPlanVO, loanSimpleInfoVO));
+        log.info("RepayController.overdue,逾期处理结束");
+        return resultMap;
+    }
+
+    /**
+     * 代偿还款
+     */
+    @ResponseBody
+    @RequestMapping("compenRepay.do")
+    public Map<String, Object> compenRepay(HttpServletRequest request) {
+        log.info("RepayController.compenRepay,代偿处理开始");
+        String periodPlanStr = request.getParameter("periodPlanVO");
+        String loanSimpleInfoStr = request.getParameter("loanSimpleInfoVO");
+        PeriodPlanVO periodPlanVO = JSONObject.parseObject(periodPlanStr, PeriodPlanVO.class);
+        LoanSimpleInfoVO loanSimpleInfoVO = JSONObject.parseObject(loanSimpleInfoStr, LoanSimpleInfoVO.class);
+        Map<String, Object> resultMap = buildReturnMap(repayCompenServiceImpl.repay(periodPlanVO, loanSimpleInfoVO));
+        log.info("RepayController.compenRepay,代偿处理结束");
+        return resultMap;
+    }
+
+    private Map<String, Object> buildReturnMap(Map<String, Object> srcMap) {
         Map<String, Object> resultMap;
         try {
-            resultMap = overdueService.overdue(periodPlanVO, loanSimpleInfoVO);
+            resultMap = srcMap;
         } catch (Exception e) {
             resultMap = new HashMap<>();
             resultMap.put("isSuccess", false);
         }
-        log.info("RepayController.overdue,逾期处理结束");
         return resultMap;
     }
 }

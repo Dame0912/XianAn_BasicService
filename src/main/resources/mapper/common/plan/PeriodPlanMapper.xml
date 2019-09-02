@@ -64,7 +64,28 @@
         and plan_status = 0
         <![CDATA[
             AND period <= #{period}
+
         ]]>
     </select>
+
+    <update id="batchUpdateOverdueAndClaim" parameterType="java.util.HashMap">
+        update xinan_uat_core_plan.period_plan
+        <set>
+            <if test="isOverdue != null">
+                is_overdue = #{isOverdue},
+            </if>
+            <if test="claimStatus != null">
+                claim_status = #{claimStatus},
+            </if>
+        </set>
+        where plan_id in
+        <foreach collection="planIds" item="planId" index="index" open="(" close=")" separator=",">
+            #{planId}
+        </foreach>
+        and period in
+        <foreach collection="periods" item="period" index="index" open="(" close=")" separator=",">
+            #{period}
+        </foreach>
+    </update>
 
 </mapper>

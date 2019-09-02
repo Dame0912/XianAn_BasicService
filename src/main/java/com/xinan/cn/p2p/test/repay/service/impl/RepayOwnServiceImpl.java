@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,14 +17,18 @@ import java.util.Map;
  */
 @Slf4j
 @Service("repayOwnServiceImpl")
-public class RepayOwnServiceImpl extends RepayCommonServiceImpl {
+public class RepayOwnServiceImpl extends AbstractRepay {
 
-    @Value("${xa.p2p.web.url}")
-    private String p2pWebUrl;
+    @Value("${xa.own.repay.url}")
+    private String ownRepayUrl;
+
+    @Override
+    public Long createLastCheckTime(Date planRepayDate) {
+        return DateUtil.getDateMillis(DateUtil.getAddDate(planRepayDate, -1));
+    }
 
     @Override
     public Map<String, Object> repayRetParam(PeriodPlanVO periodPlanVO, LoanSimpleInfoVO loanSimpleInfoVO) {
-        Map<String, Object> retMap = new HashMap<>();
         String repayTime;
         if (OverdueStatusEnum.IS_OVERDUE.getCode() == periodPlanVO.getP2pIsOverdue()) {
             String checkTime = periodPlanVO.getP2pLastCheckTime();
@@ -33,20 +38,20 @@ public class RepayOwnServiceImpl extends RepayCommonServiceImpl {
         }
 
         // 还款地址
-        StringBuffer redirectUrl = new StringBuffer(p2pWebUrl);
-        redirectUrl.append("/account/loan_detail/");
+        StringBuilder redirectUrl = new StringBuilder(ownRepayUrl);
         redirectUrl.append(loanSimpleInfoVO.getLoanBaseId());
 
         // 提示信息
-        StringBuffer tipMsg = new StringBuffer();
+        StringBuilder tipMsg = new StringBuilder();
         tipMsg.append("<font style='font-weight:bold;'>还款时间：</font>");
         tipMsg.append(repayTime);
         tipMsg.append("<br><br>");
-        tipMsg.append("<font color='red' style='font-weight:bold; font-style:italic;'>登陆借款人账号</font>");
+        tipMsg.append("<font color='red' style='font-weight:bold; font-style:italic;'>请使用借款人账号登录还款！！</font>");
         tipMsg.append("<br><br>");
         tipMsg.append("<font style='font-weight:bold;'>用户名：</font>");
         tipMsg.append(loanSimpleInfoVO.getUserName());
 
+        Map<String, Object> retMap = new HashMap<>();
         retMap.put("redirectUrl", redirectUrl.toString());
         retMap.put("tipMsg", tipMsg.toString());
         return retMap;

@@ -1,6 +1,7 @@
 package com.xinan.cn.p2p.test.repay.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ImmutableMap;
 import com.xinan.cn.common.bean.dto.p2p.asset.LoanSimpleInfoVO;
 import com.xinan.cn.common.bean.dto.plan.PeriodPlanVO;
 import com.xinan.cn.common.bean.entities.plan.Money;
@@ -23,7 +24,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Description 逾期处理
+ * 逾期处理
+ *
  * @Author lyq
  **/
 @Slf4j
@@ -43,87 +45,123 @@ public class OverdueServiceImpl implements OverdueService {
     @Value("${overdue.days}")
     private Integer overdueDays;
 
+
     @Override
-    @Transactional
     public Map<String, Object> overdue(PeriodPlanVO periodPlanVO, LoanSimpleInfoVO loanSimpleInfoVO) {
-        Map<String, Object> retMap = new HashMap<>();
         String planRepayDateStr = periodPlanVO.getPlanRepayDate();
         Date overdueDate = DateUtil.getAddDate(new Date(Long.parseLong(planRepayDateStr)), overdueDays);
         Long lastCheckTime = DateUtil.getDateMillis(overdueDate);
         String overdueDateStr = DateUtil.getFormatDate(overdueDate, DateUtil.DATEFORMATE_YYYY_MM_DD);
-        StringBuffer loanCheckURL = new StringBuffer(p2pWebUrl);
+        StringBuilder loanCheckURL = new StringBuilder(p2pWebUrl);
         loanCheckURL.append(loanSimpleInfoVO.getP2pLoanId()).append("/").append(overdueDateStr);
+        log.info("loanCheckURL：" + loanCheckURL.toString());
+        Map<String, Object> retMap = new HashMap<>();
         try {
             // 调用p2p的检查接口
-            log.info("loanCheckURL：" + loanCheckURL.toString());
-            String result = HttpClientUtil.doGet(loanCheckURL.toString());
-            if ("ok".equals(result)) {
-                log.info("请求p2p资产检查接口成功！");
-                // 1、查询逾期的期数
-                PeriodPlan periodPlan = new PeriodPlan();
-                periodPlan.setPeriod(periodPlanVO.getPeriod());
-                periodPlan.setPlanId(Long.parseLong(periodPlanVO.getP2pPlanId()));
-                List<Integer> overduePeriods = new ArrayList<>();
-                while (!overduePeriods.contains(periodPlanVO.getPeriod())) {
-                    overduePeriods = periodPlanMapper.queryOverdueAndNoRepayWithPeriod(periodPlan);
-                    TimeUnit.SECONDS.sleep(1L);
-                    log.info("OverdueServiceImpl.overdue....sleep...");
-                }
-                log.info("逾期的期数有：" + JSON.toJSONString(overduePeriods));
-
-                // 2、补全fd和fd投资人的money；更新逾期状态
-                Long p2pPlanId = Long.parseLong(loanSimpleInfoVO.getP2pPlanId());
-                Long fdPlanId = Long.parseLong(loanSimpleInfoVO.getFdPlanId());
-                Long p2pInvestPlanId = loanSimpleInfoVO.allPlanIds().get(0);
-                Long fdInvestPlanId = Long.parseLong(loanSimpleInfoVO.getFdInvestPlanId());
-                overduePeriods.forEach(period -> {
-                    // 保存房贷逾期金额
-                    List<Money> p2pOverdueMoneys = moneyMapper.queryOverdueMoney(p2pPlanId, period);
-                    saveMoney(fdPlanId, period, p2pOverdueMoneys);
-                    // 保存房贷投资逾期金额
-                    List<Money> p2pInvestOverdueMoneys = moneyMapper.queryOverdueMoney(p2pInvestPlanId, period);
-                    saveMoney(fdInvestPlanId, period, p2pInvestOverdueMoneys);
-                    // 删除322这个房贷金额
-                    Money money = new Money();
-                    money.setPlanId(fdInvestPlanId);
-                    money.setPeriod(period);
-                    money.setMoneyType(322);
-                    moneyMapper.deleteOne(money);
-                    // 将房贷和房贷投资人计划更改为逾期，代偿状态为10触发
-                    updateOverduePeriodPlan(fdPlanId, period);
-                    updateOverduePeriodPlan(fdInvestPlanId, period);
-                });
-
-                // 3、更新last_check_time
-                Map<String, Object> param = new HashMap<>();
-                param.put("lastCheckTime", lastCheckTime);
-                param.put("isAllowAheadRepay", 1);
-                param.put("planIds", loanSimpleInfoVO.allPlanIds());
-                planConfigMapper.batchUpdateLastCheckTime(param);
-            } else {
-                log.error("请求p2p资产检查接口失败！");
-                retMap.put("isSuccess", false);
-            }
+            List<Integer> overduePeriods = getOverduePeriods(loanCheckURL.toString(), periodPlanVO, loanSimpleInfoVO);
+            // 订正房贷的逾期数据等
+            revisalFdData(loanSimpleInfoVO, lastCheckTime, overduePeriods);
         } catch (Exception e) {
-            throw new RuntimeException("OverdueServiceImpl.overdue异常：" + e.getMessage());
+            log.error("OverdueServiceImpl.overdue异常：" + e.getMessage());
+            retMap.put("isSuccess", false);
         }
         retMap.put("isSuccess", true);
         return retMap;
     }
 
+    private List<Integer> getOverduePeriods(String loanCheckURL, PeriodPlanVO periodPlanVO, LoanSimpleInfoVO loanSimpleInfoVO) {
+        List<Integer> overduePeriods = null;
+        try {
+            String result = HttpClientUtil.doGet(loanCheckURL);
+            if ("ok".equals(result)) {
+                // 1、查询逾期的期数
+                PeriodPlan periodPlan = new PeriodPlan();
+                periodPlan.setPeriod(periodPlanVO.getPeriod());
+                periodPlan.setPlanId(Long.parseLong(periodPlanVO.getP2pPlanId()));
+                // overduePeriods = periodPlanMapper.queryOverdueAndNoRepayWithPeriod(periodPlan);// 有时候loanCheck请求一次不行，为了保险，请求两次
+                int count = 0;
+                while (null == overduePeriods || !overduePeriods.contains(periodPlanVO.getPeriod())) {
+                    log.info("OverdueServiceImpl.overdue....sleep..." + count);
+                    TimeUnit.SECONDS.sleep(1L);
+                    overduePeriods = overduePeriods(loanCheckURL, periodPlan);
+                    if (count > 5) {
+                        throw new RuntimeException();
+                    }
+                    count++;
+                }
+                log.info("逾期的期数有：" + JSON.toJSONString(overduePeriods));
+            }
+        } catch (Exception e) {
+            // 还原
+            List<Long> allPlanIds = loanSimpleInfoVO.allPlanIds();
+            List<Long> fdPlanIds = Arrays.asList(Long.parseLong(loanSimpleInfoVO.getFdPlanId()), Long.parseLong(loanSimpleInfoVO.getFdInvestPlanId()));
+            allPlanIds.removeAll(fdPlanIds);
+            Map<String, Object> planConfigParam = ImmutableMap.of("lastCheckTime", periodPlanVO.getFdLastCheckTime(), "planIds", allPlanIds);
+            planConfigMapper.batchUpdateLastCheckTime(planConfigParam);
+            Map<String, Object> periodPlanParam = ImmutableMap.of("isOverdue", OverdueStatusEnum.NOT_OVERDUE, "claimStatus", ClaimStatusEnum.CLAIM_NOT_TRIGGER, "planIds", allPlanIds, "periods", Collections.singletonList(periodPlanVO.getPeriod()));
+            periodPlanMapper.batchUpdateOverdueAndClaim(periodPlanParam);
+        }
+        return overduePeriods;
+    }
+
+    private List<Integer> overduePeriods(String loanCheckURL, PeriodPlan periodPlan) {
+        String result = HttpClientUtil.doGet(loanCheckURL);
+        if ("ok".equals(result)) {
+            return periodPlanMapper.queryOverdueAndNoRepayWithPeriod(periodPlan);
+        }
+        return null;
+    }
+
+    /**
+     * 修正逾期的房贷数据
+     */
+    @Transactional
+    public void revisalFdData(LoanSimpleInfoVO loanSimpleInfoVO, Long lastCheckTime, List<Integer> overduePeriods) {
+        Long p2pPlanId = Long.parseLong(loanSimpleInfoVO.getP2pPlanId());
+        Long fdPlanId = Long.parseLong(loanSimpleInfoVO.getFdPlanId());
+        Long p2pInvestPlanId = loanSimpleInfoVO.allPlanIds().get(0);
+        Long fdInvestPlanId = Long.parseLong(loanSimpleInfoVO.getFdInvestPlanId());
+        // 1、补全fd和fd投资人的money；更新逾期状态
+        overduePeriods.forEach(period -> {
+            // 保存房贷逾期金额
+            List<Money> p2pOverdueMoneys = moneyMapper.queryOverdueMoney(p2pPlanId, period);
+            saveMoney(fdPlanId, period, p2pOverdueMoneys);
+            // 保存房贷投资逾期金额
+            List<Money> p2pInvestOverdueMoneys = moneyMapper.queryOverdueMoney(p2pInvestPlanId, period);
+            saveMoney(fdInvestPlanId, period, p2pInvestOverdueMoneys);
+            // 删除322这个房贷金额
+            Money money = new Money();
+            money.setPlanId(fdInvestPlanId);
+            money.setPeriod(period);
+            money.setMoneyType(322);
+            moneyMapper.deleteOne(money);
+            // 将房贷和房贷投资人计划更改为逾期，代偿状态为0未触发代偿
+            updateOverduePeriodPlan(loanSimpleInfoVO.allPlanIds(), period);
+        });
+
+        // 2、更新last_check_time
+        Map<String, Object> param = new HashMap<>();
+        param.put("lastCheckTime", lastCheckTime);
+        param.put("isAllowAheadRepay", 1);
+        param.put("planIds", loanSimpleInfoVO.allPlanIds());
+        planConfigMapper.batchUpdateLastCheckTime(param);
+    }
+
     /**
      * 更新计划为逾期
      *
-     * @param planId 计划id
-     * @param period 期数
+     * @param planIds 计划ids
+     * @param period  期数
      */
-    private void updateOverduePeriodPlan(Long planId, Integer period) {
-        PeriodPlan periodPlan = new PeriodPlan();
-        periodPlan.setPlanId(planId);
-        periodPlan.setPeriod(period);
-        periodPlan.setIsOverdue(OverdueStatusEnum.IS_OVERDUE.getCode());
-        periodPlan.setClaimStatus(ClaimStatusEnum.CLAIM_TRIGGERED.getCode());
-        periodPlanMapper.updateOneByPlanId(periodPlan);
+    private void updateOverduePeriodPlan(List<Long> planIds, Integer period) {
+        planIds.forEach(planId -> {
+            PeriodPlan periodPlan = new PeriodPlan();
+            periodPlan.setPlanId(planId);
+            periodPlan.setPeriod(period);
+            periodPlan.setIsOverdue(OverdueStatusEnum.IS_OVERDUE.getCode());
+            periodPlan.setClaimStatus(ClaimStatusEnum.CLAIM_TRIGGERED.getCode());
+            periodPlanMapper.updateOneByPlanId(periodPlan);
+        });
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.xinan.cn;
 
-import com.alibaba.fastjson.JSON;
 import com.xinan.cn.common.bean.entities.plan.PeriodPlan;
 import com.xinan.cn.common.mapper.plan.PeriodPlanMapper;
 import com.xinan.cn.common.mapper.plan.PlanConfigMapper;
 import com.xinan.cn.common.utils.DateUtil;
+import com.xinan.cn.common.utils.SpringContextUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +51,10 @@ public class BasicServiceApplicationTests {
         System.out.println(overduePeriods);
     }
 
+    @Test
+    public void test03() {
+        PlanConfigMapper planConfigMapper = SpringContextUtil.getBean(PlanConfigMapper.class);
+        System.out.println(planConfigMapper);
+    }
 
 }

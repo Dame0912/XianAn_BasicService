@@ -166,34 +166,34 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "等待还款";
+                                return "待还款";
                             }
                             if ("10" == value) {
-                                return "还款失败";
+                                return "<font color='red'>还款失败</font>";
                             }
                             if ("14" == value) {
-                                return "系统还款失败(不计罚息)";
+                                return "<font color='red'>系统还款失败(不计罚息)</font>";
                             }
                             if ("20" == value) {
-                                return "还款处理中";
+                                return "<font color='blue'>还款处理中</font>";
                             }
                             if ("21" == value) {
-                                return "系统还款处理中(不计罚息)";
+                                return "<font color='blue'>系统还款处理中(不计罚息)</font>";
                             }
                             if ("30" == value) {
-                                return "还款成功";
+                                return "<font color='green'>还款成功</font>";
                             }
                             if ("32" == value) {
-                                return "部分还款成功";
+                                return "<font color='green'>部分还款成功</font>";
                             }
                             if ("51" == value) {
                                 return "已加速到期";
                             }
                             if ("52" == value) {
-                                return "已提前还款";
+                                return "<font color='green'>已提前还款</font>";
                             }
                             if ("53" == value) {
-                                return "已债转";
+                                return "<font color='#f08080'>已债转</font>";
                             }
                             return "";
                         }
@@ -204,10 +204,10 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "未逾期";
+                                return "否";
                             }
                             if ("1" == value) {
-                                return "已逾期";
+                                return "<font color='red'>已逾期</font>";
                             }
                             if ("999" == value) {
                                 return "未知";
@@ -221,19 +221,19 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "未触发代偿";
+                                return "未触发";
                             }
                             if ("10" == value) {
-                                return "已触发代偿";
+                                return "已触发";
                             }
                             if ("11" == value) {
-                                return "代偿处理中";
+                                return "<font color='blue'>处理中</font>";
                             }
                             if ("12" == value) {
-                                return "代偿成功";
+                                return "<font color='green'>代偿成功</font>";
                             }
                             if ("14" == value) {
-                                return "代偿失败";
+                                return "<font color='red'>代偿失败</font>";
                             }
                             if ("999" == value) {
                                 return "未知";
@@ -247,34 +247,34 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "等待还款";
+                                return "待还款";
                             }
                             if ("10" == value) {
-                                return "还款失败";
+                                return "<font color='red'>还款失败</font>";
                             }
                             if ("14" == value) {
-                                return "系统还款失败(不计罚息)";
+                                return "<font color='red'>系统还款失败(不计罚息)</font>";
                             }
                             if ("20" == value) {
-                                return "还款处理中";
+                                return "<font color='blue'>还款处理中</font>";
                             }
                             if ("21" == value) {
-                                return "系统还款处理中(不计罚息)";
+                                return "<font color='blue'>系统还款处理中(不计罚息)</font>";
                             }
                             if ("30" == value) {
-                                return "还款成功";
+                                return "<font color='green'>还款成功</font>";
                             }
                             if ("32" == value) {
-                                return "部分还款成功";
+                                return "<font color='green'>部分还款成功</font>";
                             }
                             if ("51" == value) {
                                 return "已加速到期";
                             }
                             if ("52" == value) {
-                                return "已提前还款";
+                                return "<font color='green'>已提前还款</font>";
                             }
                             if ("53" == value) {
-                                return "已债转";
+                                return "<font color='#f08080'>已债转</font>";
                             }
                             return "";
                         }
@@ -285,10 +285,10 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "未逾期";
+                                return "否";
                             }
                             if ("1" == value) {
-                                return "已逾期";
+                                return "<font color='red'>已逾期</font>";
                             }
                             if ("999" == value) {
                                 return "未知";
@@ -302,19 +302,19 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             if ("0" == value) {
-                                return "未触发代偿";
+                                return "未触发";
                             }
                             if ("10" == value) {
-                                return "已触发代偿";
+                                return "已触发";
                             }
                             if ("11" == value) {
-                                return "代偿处理中";
+                                return "<font color='blue'>处理中</font>";
                             }
                             if ("12" == value) {
-                                return "代偿成功";
+                                return "<font color='green'>代偿成功</font>";
                             }
                             if ("14" == value) {
-                                return "代偿失败";
+                                return "<font color='red'>代偿失败</font>";
                             }
                             if ("999" == value) {
                                 return "未知";
@@ -656,27 +656,18 @@
             return;
         }
 
-        // 第一期需要还款
-        if (index === 0) {
-            if (!planTableMap["firstPeriod"]) {
-                planTableMap["isAllowRepay"] = false;
-                return operator = "<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
-            }
-            return;
-        }
-
         if (!planTableMap["isAllowRepay"]) {
             return;
         }
 
         // 如果存在非待处理的则不展示标签按钮
         if (row.p2pPlanStatus === 0 && row.fdPlanStatus === 0) {
-            operator = "<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
-            if (row.p2pIsOverdue === 0 && row.fdIsOverdue === 0) {
-                operator = operator + "&nbsp;&nbsp;<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='overdue(" + JSON.stringify(row) + ")'>逾期</button>";
-            }
-            if (row.p2pClaimStatus === 0 && row.fdClaimStatus === 0) {
-                operator = operator + "&nbsp;&nbsp;<button class='btn btn-mini btn-primary operatorBtn' type='button' onclick='compenRepay(" + JSON.stringify(row) + ")'>代偿</button>";
+            if (row.p2pClaimStatus != 12 && row.fdClaimStatus != 12) { //逾期代偿有问题，代偿完成，计划表未更新，故逾期下不展示代偿，系统修复完，该功能放开
+                operator = "<button class='btn btn-success btn-mini operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
+                if (row.p2pIsOverdue === 0 && row.fdIsOverdue === 0) {
+                    operator = operator + "&nbsp;&nbsp;<button class='btn btn-primary btn-mini operatorBtn' type='button' onclick='compenRepay(" + JSON.stringify(row) + ")'>代偿</button>";
+                    operator = operator + "&nbsp;&nbsp;<button class='btn btn-danger btn-mini operatorBtn' type='button' onclick='overdue(" + JSON.stringify(row) + ")'>逾期</button>";
+                }
             }
             return operator;
         } else if (row.p2pPlanStatus === 30 && row.fdPlanStatus === 30) {
@@ -710,6 +701,7 @@
                         //layer.close(cindex);
                     }, function (cindex) {
                         layer.close(cindex);
+                        searchInfo();
                     });
                 } else {
                     layer.msg("申请还款异常！", {time: 3000, icon: 5, shift: 6});
@@ -753,7 +745,36 @@
 
     // 代偿还款
     function compenRepay(param) {
-
+        var loadingIndex = null;
+        $.ajax({
+            url: '/test/repay/compenRepay.do',
+            type: 'POST',
+            data: {
+                "periodPlanVO": JSON.stringify(param),
+                "loanSimpleInfoVO": JSON.stringify(loanTableMap["loanSimpleInfoVO"])
+            },
+            beforeSend: function () {
+                loadingIndex = layer.load(2, {time: 10 * 1000});
+            },
+            success: function (data) {
+                layer.close(loadingIndex);
+                if (data.isSuccess) {
+                    layer.confirm(data.tipMsg, {icon: 1, title: '支付提示', btn: ['去代偿', '关闭窗口']}, function (cindex) {
+                        window.open(data.redirectUrl);
+                        //layer.close(cindex);
+                    }, function (cindex) {
+                        layer.close(cindex);
+                        searchInfo();
+                    });
+                } else {
+                    layer.msg("申请代偿还款异常！", {time: 3000, icon: 5, shift: 6});
+                }
+            },
+            error: function () {
+                layer.close(loadingIndex);
+                layer.msg("申请代偿还款失败！", {time: 3000, icon: 5, shift: 6});
+            }
+        });
     }
 
     // 日期处理，timestamp为毫秒的时间戳数字

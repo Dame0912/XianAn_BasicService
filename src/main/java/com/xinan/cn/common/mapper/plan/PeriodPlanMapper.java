@@ -3,6 +3,7 @@ package com.xinan.cn.common.mapper.plan;
 import com.xinan.cn.common.bean.entities.plan.PeriodPlan;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PeriodPlanMapper {
 
@@ -22,4 +23,6 @@ public interface PeriodPlanMapper {
     List<PeriodPlan> listPlan(Long planId);
 
     List<Integer> queryOverdueAndNoRepayWithPeriod(PeriodPlan periodPlan);
+
+    int batchUpdateOverdueAndClaim(Map<String,Object> param);
 }
