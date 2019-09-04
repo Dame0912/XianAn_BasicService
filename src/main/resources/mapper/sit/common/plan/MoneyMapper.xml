@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.plan.MoneyMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.plan.Money">
+        <result column="plan_id" property="planId" jdbcType="BIGINT"/>
+        <result column="period" property="period" jdbcType="INTEGER"/>
+        <result column="plan_amount" property="planAmount" jdbcType="BIGINT"/>
+        <result column="balance" property="balance" jdbcType="BIGINT"/>
+        <result column="actual_amount" property="actualAmount" jdbcType="BIGINT"/>
+        <result column="money_type" property="moneyType" jdbcType="INTEGER"/>
+        <result column="last_repay_time" property="lastRepayTime" jdbcType="BIGINT"/>
+        <result column="receiver_type" property="receiverType" jdbcType="INTEGER"/>
+        <result column="generate_log" property="generateLog" jdbcType="VARCHAR"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deletedAt" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        plan_id, period, plan_amount, balance, actual_amount, money_type, last_repay_time, receiver_type, generate_log, version, id, created_at, updated_at, deleted_at
+    </sql>
+
+    <select id="queryOverdueMoney" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_core_plan.money
+        where plan_id = #{planId}
+        AND period = #{period}
+        AND money_type NOT IN (100, 200, 322)
+    </select>
+
+    <insert id="insertOne" parameterType="com.xinan.cn.common.bean.entities.plan.Money">
+        INSERT INTO xinan_core_plan.money (
+            plan_id,
+            period,
+            plan_amount,
+            balance,
+            actual_amount,
+            money_type,
+            last_repay_time,
+            receiver_type,
+            generate_log,
+            version,
+            created_at,
+            updated_at,
+            deleted_at
+        ) VALUES (
+            #{planId},
+            #{period},
+            #{planAmount},
+            #{balance},
+            #{actualAmount},
+            #{moneyType},
+            #{lastRepayTime},
+            #{receiverType},
+            #{generateLog},
+            #{version},
+            #{createdAt},
+            #{updatedAt},
+            #{deletedAt}
+        )
+    </insert>
+
+    <delete id="deleteOne" parameterType="com.xinan.cn.common.bean.entities.plan.Money">
+        DELETE FROM xinan_core_plan.money
+        WHERE plan_id = #{planId} AND period=#{period} AND money_type= #{moneyType};
+    </delete>
+</mapper>

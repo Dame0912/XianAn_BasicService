@@ -24,9 +24,7 @@
 
     <div class="navbar-collapse collapse" style="height: 1px;">
         <ul id="main-menu" class="nav navbar-nav navbar-right">
-
             <li class="dropdown hidden-xs">
-
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <span class="glyphicon glyphicon-user padding-right-small"
                           style="position: relative; top: 3px;"></span>
@@ -39,13 +37,18 @@
                     <li class="divider"></li>
                     <li><a tabindex="-1" th:href="@{~/index.html}">退出登陆</a></li>
                 </ul>
-
             </li>
-
         </ul>
     </div>
-
+    <script type="text/javascript" th:inline="javascript">
+        //设置全局属性，下面符号不能省略
+        /*<![CDATA[*/
+        var currentEnvironment = [[${currentEnvironment}]];//当前环境
+        console.log(currentEnvironment);
+        /*]]>*/
+    </script>
 </div>
 
 </body>
+
 </html>

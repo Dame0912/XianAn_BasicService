@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.plan.PlanConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.plan.PlanConfig">
+        <result column="plan_id" property="planId" jdbcType="BIGINT"/>
+        <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+        <result column="request_source" property="requestSource" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="BIGINT"/>
+        <result column="payment_type" property="paymentType" jdbcType="INTEGER"/>
+        <result column="interest_type" property="interestType" jdbcType="INTEGER"/>
+        <result column="periods" property="periods" jdbcType="INTEGER"/>
+        <result column="period_days" property="periodDays" jdbcType="INTEGER"/>
+        <result column="year_days" property="yearDays" jdbcType="INTEGER"/>
+        <result column="month_days" property="monthDays" jdbcType="INTEGER"/>
+        <result column="repay_day" property="repayDay" jdbcType="INTEGER"/>
+        <result column="first_period_min_days" property="firstPeriodMinDays" jdbcType="INTEGER"/>
+        <result column="final_period_min_days" property="finalPeriodMinDays" jdbcType="INTEGER"/>
+        <result column="interest_active_time" property="interestActiveTime" jdbcType="BIGINT"/>
+        <result column="max_repay_time" property="maxRepayTime" jdbcType="BIGINT"/>
+        <result column="is_involve_start_date" property="isInvolveStartDate" jdbcType="INTEGER"/>
+        <result column="is_involve_end_date" property="isInvolveEndDate" jdbcType="INTEGER"/>
+        <result column="first_period_repay_day_type" property="firstPeriodRepayDayType" jdbcType="INTEGER"/>
+        <result column="final_period_repay_day_type" property="finalPeriodRepayDayType" jdbcType="INTEGER"/>
+        <result column="balance_adjust_type" property="balanceAdjustType" jdbcType="INTEGER"/>
+        <result column="repay_plan_gene_mode" property="repayPlanGeneMode" jdbcType="INTEGER"/>
+        <result column="end_period_interest_type" property="endPeriodInterestType" jdbcType="INTEGER"/>
+        <result column="is_allow_pre_repay_current" property="isAllowPreRepayCurrent" jdbcType="INTEGER"/>
+        <result column="is_allow_penalty_deduct" property="isAllowPenaltyDeduct" jdbcType="INTEGER"/>
+        <result column="penalty_grace_days" property="penaltyGraceDays" jdbcType="INTEGER"/>
+        <result column="last_check_time" property="lastCheckTime" jdbcType="BIGINT"/>
+        <result column="claim_grace_days" property="claimGraceDays" jdbcType="INTEGER"/>
+        <result column="is_skip_festival" property="isSkipFestival" jdbcType="INTEGER"/>
+        <result column="is_calc_penalty_in_festival" property="IsCalcPenaltyInFestival" jdbcType="INTEGER"/>
+        <result column="is_allow_pre_repay" property="isAllowPreRepay" jdbcType="INTEGER"/>
+        <result column="pre_repay_min_period" property="preRepayMinPeriod" jdbcType="INTEGER"/>
+        <result column="is_calc_pre_repay_interest_by_used_days" property="isCalcPreRepayInterestByUsedDays"
+                jdbcType="INTEGER"/>
+        <result column="is_calc_current_center_service_by_used_days" property="isCalcCurrentCenterServiceByUsedDays"
+                jdbcType="INTEGER"/>
+        <result column="pre_repay_other_fee_repay_type" property="preRepayOtherFeeRepayType" jdbcType="INTEGER"/>
+        <result column="pre_repay_calc_method" property="preRepayCalcMethod" jdbcType="INTEGER"/>
+        <result column="pre_repay_additional_interest_period" property="preRepayAdditionalInterestPeriod"
+                jdbcType="INTEGER"/>
+        <result column="is_allow_acc" property="isAllowAcc" jdbcType="INTEGER"/>
+        <result column="acc_interest_charge" property="accInterestCharge" jdbcType="INTEGER"/>
+        <result column="acc_fixed_interest_amount" property="accFixedInterestAmount" jdbcType="BIGINT"/>
+        <result column="acc_condition" property="accCondition" jdbcType="INTEGER"/>
+        <result column="acc_arg" property="accArg" jdbcType="INTEGER"/>
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deletedAt" jdbcType="BIGINT"/>
+        <result column="is_allow_ahead_repay" property="isAllowAheadRepay" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        plan_id, business_id, request_source, amount, payment_type, interest_type, periods, period_days, year_days, month_days, repay_day, first_period_min_days, final_period_min_days, interest_active_time, max_repay_time, is_involve_start_date, is_involve_end_date, first_period_repay_day_type, final_period_repay_day_type, balance_adjust_type, repay_plan_gene_mode, end_period_interest_type, is_allow_pre_repay_current, is_allow_penalty_deduct, penalty_grace_days, last_check_time, claim_grace_days, is_skip_festival, is_calc_penalty_in_festival, is_allow_pre_repay, pre_repay_min_period, is_calc_pre_repay_interest_by_used_days, is_calc_current_center_service_by_used_days, pre_repay_other_fee_repay_type, pre_repay_calc_method, pre_repay_additional_interest_period, is_allow_acc, acc_interest_charge, acc_fixed_interest_amount, acc_condition, acc_arg, id, version, created_at, updated_at, deleted_at, is_allow_ahead_repay
+    </sql>
+
+    <select id="getPlanConfigByPlanId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_core_plan.plan_config where plan_id = #{planId}
+    </select>
+
+    <update id="updateByPlanId" parameterType="com.xinan.cn.common.bean.entities.plan.PlanConfig">
+        update xinan_core_plan.plan_config
+        <set>
+            <if test="lastCheckTime != null">
+                last_check_time = #{lastCheckTime},
+            </if>
+            <if test="isAllowAheadRepay != null">
+                is_allow_ahead_repay = #{isAllowAheadRepay},
+            </if>
+        </set>
+        where plan_id = #{planId}
+    </update>
+
+    <update id="batchUpdateLastCheckTime" parameterType="java.util.HashMap">
+        update xinan_core_plan.plan_config
+        <set>
+            <if test="lastCheckTime != null">
+                last_check_time = #{lastCheckTime},
+            </if>
+            <if test="isAllowAheadRepay != null">
+                is_allow_ahead_repay = #{isAllowAheadRepay},
+            </if>
+        </set>
+        where plan_id in
+        <foreach collection="planIds" item="planId" index="index" open="(" close=")" separator=",">
+            #{planId}
+        </foreach>
+    </update>
+
+</mapper>

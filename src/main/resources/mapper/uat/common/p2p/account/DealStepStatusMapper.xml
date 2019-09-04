@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.p2p.account.DealStepStatusMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.p2p.account.DealStepStatus">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="act_id" property="actId" jdbcType="BIGINT"/>
+        <result column="sub_act_type" property="subActType" jdbcType="INTEGER"/>
+        <result column="deal_type" property="dealType" jdbcType="VARCHAR"/>
+        <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+        <result column="sku_id" property="skuId" jdbcType="BIGINT"/>
+        <result column="item" property="item" jdbcType="VARCHAR"/>
+        <result column="step" property="step" jdbcType="VARCHAR"/>
+        <result column="step_status" property="stepStatus" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="retry_times" property="retryTimes" jdbcType="INTEGER"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="error_msg" property="errorMsg"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, act_id, sub_act_type, deal_type, business_id, sku_id, item, step, step_status, status, created_at, updated_at, retry_times, error_code, error_msg
+    </sql>
+
+    <select id="selectAllBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_account.deal_step_status
+        where sku_id=#{skuId} order by id desc
+    </select>
+
+
+</mapper>

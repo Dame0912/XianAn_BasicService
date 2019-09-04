@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.p2p.financial.P2PLoansBaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.p2p.financial.P2PLoansBase">
+        <result column="id" property="id"/>
+        <result column="loan_user_id" property="loanUserId"/>
+        <result column="loan_user_name" property="loanUserName"/>
+        <result column="loan_id" property="loanId"/>
+        <result column="loan_apply_no" property="loanApplyNo"/>
+        <result column="sku_id" property="skuId"/>
+        <result column="loan_number" property="loanNumber"/>
+        <result column="loan_name" property="loanName"/>
+        <result column="sku_name" property="skuName"/>
+        <result column="loan_type" property="loanType"/>
+        <result column="loan_status" property="loanStatus"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id,loan_user_id,loan_user_name,loan_id,loan_apply_no,sku_id,loan_number,loan_name,sku_name,loan_type,loan_status
+	</sql>
+
+    <select id="getBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_financial.loans_base WHERE sku_id = #{loanId}
+    </select>
+
+</mapper>
