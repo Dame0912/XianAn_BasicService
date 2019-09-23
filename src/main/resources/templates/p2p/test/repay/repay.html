@@ -681,8 +681,8 @@
         if (row.p2pPlanStatus === 0 && row.fdPlanStatus === 0) {
             if (row.p2pClaimStatus != 12 && row.fdClaimStatus != 12) { //逾期代偿有问题，代偿完成，计划表未更新，故逾期下不展示代偿，系统修复完，该功能放开
                 operator = "<button class='btn btn-success btn-mini operatorBtn' type='button' onclick='ownRepay(" + JSON.stringify(row) + ")'>还款</button>";
+                operator = operator + "&nbsp;&nbsp;<button class='btn btn-primary btn-mini operatorBtn' type='button' onclick='compenRepay(" + JSON.stringify(row) + ")'>代偿</button>";
                 if (row.p2pIsOverdue === 0 && row.fdIsOverdue === 0) {
-                    operator = operator + "&nbsp;&nbsp;<button class='btn btn-primary btn-mini operatorBtn' type='button' onclick='compenRepay(" + JSON.stringify(row) + ")'>代偿</button>";
                     operator = operator + "&nbsp;&nbsp;<button class='btn btn-danger btn-mini operatorBtn' type='button' onclick='overdue(" + JSON.stringify(row) + ")'>逾期</button>";
                 }
             }
