@@ -335,6 +335,11 @@
                         valign: 'middle',
                         formatter: function (value, row, index) {
                             var skuId = $.trim($("#skuId").val());
+                            if(currentEnvironment == "prd"){
+                                return "<a target='_blank' href='http://opm.xamoney.com/#/project/projectdetail/" + skuId + "'> <i class='fa fa-file'></i> </a>";
+                            }else if(currentEnvironment == "uat"){
+                                return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + skuId + "'> <i class='fa fa-file'></i> </a>";
+                            }
                             return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + skuId + "'> <i class='fa fa-file'></i> </a>";
                         }
                     }],
@@ -493,6 +498,11 @@
                         align: 'center',
                         valign: 'middle',
                         formatter: function (value, row, index) {
+                            if(currentEnvironment == "prd"){
+                                return "<a target='_blank' href='http://opm.xamoney.com/#/project/projectdetail/" + row.p2pSkuId + "'> <i class='fa fa-file'></i> </a>";
+                            }else if(currentEnvironment == "uat"){
+                                return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + row.p2pSkuId + "'> <i class='fa fa-file'></i> </a>";
+                            }
                             return "<a target='_blank' href='http://opm-uat.xamoney.com/#/project/projectdetail/" + row.p2pSkuId + "'> <i class='fa fa-file'></i> </a>";
                         }
                     }],
