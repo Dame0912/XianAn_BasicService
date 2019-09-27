@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.p2p.account.AccountFlowMapper">
+    <resultMap id="BaseResultMap" type="com.xinan.cn.common.bean.entities.p2p.account.AccountFlow">
+        <id column="flow_id" property="flowId" jdbcType="BIGINT"/>
+        <result column="act_id" property="actId" jdbcType="BIGINT"/>
+        <result column="sub_act_type" property="subActType" jdbcType="INTEGER"/>
+        <result column="another_act_id" property="anotherActId" jdbcType="BIGINT"/>
+        <result column="amount" property="amount" jdbcType="BIGINT"/>
+        <result column="flow_type" property="flowType" jdbcType="INTEGER"/>
+        <result column="trade_type" property="tradeType" jdbcType="TINYINT"/>
+        <result column="flow_desc" property="flowDesc" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="detail" property="detail" jdbcType="VARCHAR"/>
+        <result column="show_flag" property="showFlag" jdbcType="TINYINT"/>
+        <result column="sku_id" property="skuId" jdbcType="BIGINT"/>
+        <result column="business_id" property="businessId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="TINYINT"/>
+        <result column="items" property="items" jdbcType="VARCHAR"/>
+        <result column="ret_msg" property="retMsg" jdbcType="VARCHAR"/>
+        <result column="ret_code" property="retCode" jdbcType="VARCHAR"/>
+        <result column="total_asset" property="totalAsset" jdbcType="BIGINT"/>
+        <result column="created_at" property="createdAt" jdbcType="BIGINT"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="result_at" property="resultAt" jdbcType="TIMESTAMP"/>
+        <result column="before_act_Info" property="beforeActInfo" jdbcType="VARCHAR"/>
+        <result column="after_act_Info" property="afterActInfo" jdbcType="VARCHAR"/>
+        <result column="extend_reserve" property="extendReserve" jdbcType="VARCHAR"/>
+        <result column="bank_order_id" property="bankOrderId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    flow_id, act_id, sub_act_type, another_act_id, amount, flow_type, trade_type, flow_desc,
+    description, detail, show_flag, sku_id, business_id, status, items, ret_msg, ret_code, total_asset,
+    created_at, updated_at, result_at, before_act_Info, after_act_Info,extend_reserve,bank_order_id
+    </sql>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_account.account_flow
+        where act_id = 1050943209132519424
+        AND before_act_info != ""
+        order by created_at asc limit 1,20000
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_account.account_flow
+        where flow_id = #{flowId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByBusiness" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xinan_account.account_flow
+        where act_id=#{actId} and sub_act_type=#{subActType} and flow_type=#{flowType} and business_id=#{businessId}
+    </select>
+
+</mapper>
