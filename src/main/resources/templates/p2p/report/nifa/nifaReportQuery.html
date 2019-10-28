@@ -820,7 +820,9 @@
                         align: 'center',
                         halign: 'center',
                         formatter: function (value, row, index) {
-                            return index + 1;
+                            var pageSize = $('#prjInfoTable').bootstrapTable('getOptions').pageSize;
+                            var pageNumber = $('#prjInfoTable').bootstrapTable('getOptions').pageNumber;
+                            return pageSize * (pageNumber - 1) + index + 1;
                         }
                     }, {
                         field: 'prjNum',
@@ -842,7 +844,19 @@
                         align: 'center',
                         halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        sortable: false,
+                        formatter: function (value, row, index) {
+                            if ("项目 + 自然人" == value) {
+                                return "<font color='green'>项目 + 自然人</font>";
+                            }
+                            if ("项目 + 法人" == value) {
+                                return "<font color='#00ffff'>项目 + 法人</font>";
+                            }
+                            if ("项目信息变更" == value) {
+                                return "<font color='blue'>项目信息变更</font>";
+                            }
+                            return "";
+                        }
                     }, {
                         field: 'status',
                         title: '报送状态',
@@ -921,7 +935,6 @@
                 method: 'post', //请求方式
                 contentType: 'application/x-www-form-urlencoded',
                 responseHandler: function (res) {
-                    console.log(res);
                     window.recordTableMap = {};
                     $.each(res, function (i, v) {
                         window.recordTableMap[v.id] = v;
@@ -969,7 +982,7 @@
                                 return "<font color='green'>项目 + 借款人</font>";
                             }
                             if ("32" == value) {
-                                return "项目信息变更";
+                                return "<font color='blue'>项目信息变更</font>";
                             }
                             return "";
                         }
