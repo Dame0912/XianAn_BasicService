@@ -18,11 +18,18 @@
             charset="UTF-8"></script>
     <link th:href="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.css}" rel="stylesheet">
     <script th:src="@{~/assets/bootstrap/bootstrap-table/bootstrap-table.js}"></script>
+    <script th:src="@{~/assets/bootstrap/bootstrap-table/bootstrap-table-locale-all.js}"></script>
     <script th:src="@{~/assets/bootstrap/bootstrap-table/locale/bootstrap-table-zh-CN.js}"></script>
     <script th:src="@{~/assets/layer/layer.js}"></script>
 </head>
 <style type="text/css">
-
+    .tableTitle {
+        text-align: center;
+        margin-bottom: 23px;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'SimHei';
+    }
     #searchForm input {
         width: 200px;
     }
@@ -47,6 +54,8 @@
         text-align: center;
         background: #2894FF;
     }
+
+
 </style>
 
 <body class=" theme-blue">
@@ -101,7 +110,63 @@
 
         <div class="row" style="margin: 15px;">
             <div class="col-md-13 col-sm-13 col-xs-13">
-                <table id="writeoffTable"></table>
+                <h3 class="tableTitle">项目信息表</h3>
+                <table id="prjInfoTable"></table>
+            </div>
+        </div>
+        <br>
+        <div class="row" style="margin: 15px;">
+            <div class="col-md-13 col-sm-13 col-xs-13">
+                <h3 class="tableTitle">请求记录表</h3>
+                <table id="reqRecordTable"></table>
+            </div>
+        </div>
+        <br>
+
+        <div class="modal fade ex-modal-lg" id="reqAndRepModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3>内容详情</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" class="form-inline">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="prjTitle">请求数据</div>
+                                </div>
+                                <div id="reqRecordForm">
+                                    <div class="col-md-12">
+                                        <div>
+                                            <label tempAttr="requestData"></label>
+                                            <div class="form-group" style="word-break:break-all; margin:0px 0 30px 0;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br/>
+                                <br/>
+                                <div id="repRecordForm">
+                                    <div class="col-md-12">
+                                        <div class="prjTitle">响应数据</div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div>
+                                            <label tempAttr="responseData"></label>
+                                            <div class="form-group" style="word-break:break-all;margin:15px 0 0 0;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">
+                            关闭
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -704,24 +769,25 @@
     $(function () {
         $("#nifaIndex").addClass('active');
         $("#nifaIndex").parent().removeClass('collapse').addClass('collapsed');
-        new TableObj().Init();//初始化表格
+        new PrjInfoTableObj().Init();//初始化项目信息表格
+        new ReqRecordTableObj().Init();//初始化请求记录表格
     });
     $('.form_date').datetimepicker({
         language: 'zh-CN',
         format: 'yyyy-mm-dd hh:ii:ss'
     });
 
-    function initTable(param) {
-        var tab = new TableObj("/report/nifa/nifaReportQuery.do", param);
+    function initPrjInfoTable(param) {
+        var tab = new PrjInfoTableObj("/report/nifa/nifaPrjInfoQuery.do", param);
         tab.Init();
     }
 
-    var TableObj = function (url, dataParam) {
-        var oTableInit = new Object();
+    var PrjInfoTableObj = function (url, dataParam) {
+        var prjInfoTableInit = new Object();
         //初始化Table
-        oTableInit.Init = function () {
-            $('#writeoffTable').bootstrapTable('destroy');//先销毁表格
-            $('#writeoffTable').bootstrapTable({
+        prjInfoTableInit.Init = function () {
+            $('#prjInfoTable').bootstrapTable('destroy');//先销毁表格
+            $('#prjInfoTable').bootstrapTable({
                 url: url,
                 method: 'post', //请求方式
                 contentType: 'application/x-www-form-urlencoded',
@@ -832,12 +898,154 @@
                 undefinedText: '---',// 当数据为 undefined 时显示的字符
                 paginationLoop: true,// 分页条无限循环的功能
                 sortable: false,
-                showColumns: true//显示下拉框勾选要显示的列
+                showColumns: false//显示下拉框勾选要显示的列
                 //sortOrder : "desc"
             });
         };
-        return oTableInit;
+        return prjInfoTableInit;
     };
+
+
+    function initReqRecordTable(param) {
+        var tab = new ReqRecordTableObj("/report/nifa/nifaReqRecordQuery.do", param);
+        tab.Init();
+    }
+
+    var ReqRecordTableObj = function (url, dataParam) {
+        var reqRecordTableInit = new Object();
+        //初始化Table
+        reqRecordTableInit.Init = function () {
+            $('#reqRecordTable').bootstrapTable('destroy');//先销毁表格
+            $('#reqRecordTable').bootstrapTable({
+                url: url,
+                method: 'post', //请求方式
+                contentType: 'application/x-www-form-urlencoded',
+                responseHandler: function (res) {
+                    console.log(res);
+                    window.recordTableMap = {};
+                    $.each(res, function (i, v) {
+                        window.recordTableMap[v.id] = v;
+                    });
+                    return res;
+                },
+                queryParamsType: "undefined",
+                queryParams: function (params) {
+                    var param = {
+                        prjNum: dataParam.prjNum,
+                        status: dataParam.status,
+                        startTime: dataParam.startTime,
+                        endTime: dataParam.endTime
+                    };
+                    return param;
+                },
+                columns: [
+                    {
+                        field: 'SerialNumber',
+                        title: '#',
+                        align: 'center',
+                        halign: 'center',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        }
+                    }, {
+                        field: 'prjNumList',
+                        title: '项目编号集',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'totalNum',
+                        title: '总条数',
+                        align: 'center',
+                        valign: 'middle',
+                    }, {
+                        field: 'type',
+                        title: '类型',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            if ("31" == value) {
+                                return "<font color='green'>项目 + 借款人</font>";
+                            }
+                            if ("32" == value) {
+                                return "项目信息变更";
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            if ("-1" == value) {
+                                return "<font color='red'>失败</font>";
+                            }
+                            if ("1" == value) {
+                                return "<font color='blue'>处理中</font>";
+                            }
+                            if ("2" == value) {
+                                return "成功";
+                            }
+                            return "";
+                        }
+                    }, {
+                        field: 'errorMsg',
+                        title: '失败原因',
+                        align: 'center',
+                        halign: 'center',
+                        valign: 'middle',
+                        sortable: false
+                    }, {
+                        field: 'createdAt',
+                        title: '创建时间',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return formatTime(value, 'Y-M-D h:m:s');
+                        }
+                    }, {
+                        field: 'updatedAt',
+                        title: '更新时间',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return formatTime(value, 'Y-M-D h:m:s');
+                        }
+                    }, {
+                        title: '请求 & 响应数据',
+                        align: 'center',
+                        valign: 'middle',
+                        formatter: function (value, row, index) {
+                            return "<a role='button' data-toggle='modal' onclick=viewRecordData(" + row.id + ")> <i class='fa fa-file'></i> </a>";
+                        }
+                    }],
+                sidePagination: 'client',//分页方式： client 客户端分页， server 服务端分页（*）
+                pageNumber: 1, //初始化加载第一页，默认第一页
+                pageSize: 10, //每页的记录行数（*）
+                pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
+                paginationPreText: '«',
+                paginationNextText: '»',
+                pagination: true, //是否显示分页（*）
+                striped: true, //是否显示行间隔色
+                clickToSelect: false, //是否启用点击选中行
+                showToggle: false, //是否显示详细视图和列表视图的切换按钮
+                onLoadSuccess: function (rsp) { //加载成功时执行
+                },
+                onLoadError: function () {
+                    // console.log('-------onLoadError-------');
+                },
+                cache: false,// 不开启缓存
+                undefinedText: '---',// 当数据为 undefined 时显示的字符
+                paginationLoop: true,// 分页条无限循环的功能
+                sortable: false,
+                showColumns: false//显示下拉框勾选要显示的列
+            });
+        };
+        return reqRecordTableInit;
+    };
+
 
     // 搜索
     $('#searchBtn').on('click', function () {
@@ -849,7 +1057,13 @@
             layer.alert("起始时间不可以大于结束时间！", {title: '提示', icon: 5, shift: 6});
             return false;
         }
-        initTable({
+        initPrjInfoTable({
+            prjNum: prjNum,
+            status: status,
+            startTime: startTime,
+            endTime: endTime
+        });
+        initReqRecordTable({
             prjNum: prjNum,
             status: status,
             startTime: startTime,
@@ -895,6 +1109,44 @@
             });
             $("#myModal3").modal();
         }
+    }
+
+    window.viewRecordData = function (idx) {
+        var rowData = window.recordTableMap[idx];
+        $("#reqAndRepModal .modal-body #reqRecordForm label").each(function (i, e) {
+            var lbl = $(e);
+            var field = lbl.attr("tempAttr");
+            lbl.next().text(rowData[field]);
+        });
+        $("#reqAndRepModal .modal-body #repRecordForm label").each(function (i, e) {
+            var lbl = $(e);
+            var field = lbl.attr("tempAttr");
+            lbl.next().text(rowData[field]);
+        });
+        $("#reqAndRepModal").modal();
+    }
+
+    // 日期处理，timestamp为毫秒的时间戳数字
+    function formatTime(timestamp, format) {
+        var time = new Date(timestamp);
+        var newArr = [];
+        var formatArr = ['Y', 'M', 'D', 'h', 'm', 's']
+        newArr.push(time.getFullYear())
+        newArr.push(formatNumber(time.getMonth() + 1))
+        newArr.push(formatNumber(time.getDate()))
+        newArr.push(formatNumber(time.getHours()))
+        newArr.push(formatNumber(time.getMinutes()))
+        newArr.push(formatNumber(time.getSeconds()))
+        for (var i in newArr) {
+            format = format.replace(formatArr[i], newArr[i])
+        }
+        return format;
+    }
+
+    // 日期格式
+    function formatNumber(n) {
+        n = n.toString();
+        return n[1] ? n : '0' + n;
     }
 
 </script>

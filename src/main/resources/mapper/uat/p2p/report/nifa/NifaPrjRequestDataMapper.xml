@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.p2p.report.nifa.mapper.NifaPrjRequestDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.p2p.report.nifa.bean.entities.NifaPrjRequestData">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="request_id" property="requestId" jdbcType="BIGINT"/>
+        <result column="request_data" property="requestData" jdbcType="VARCHAR"/>
+        <result column="response_data" property="responseData" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deletedAt" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id, request_id, request_data, response_data, created_at, updated_at, deleted_at
+	</sql>
+
+    <select id="queryReqDataList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM nifa_prj_request_data WHERE 1=1
+        AND request_id in
+        <foreach collection="requestIds" item="requestId" open="(" close=")" separator=",">
+            #{requestId}
+        </foreach>
+    </select>
+
+</mapper>

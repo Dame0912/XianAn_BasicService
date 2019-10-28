@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.p2p.report.nifa.mapper.NifaPrjRequestRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.p2p.report.nifa.bean.entities.NifaPrjRequestRecord">
+        <result column="id" property="id" jdbcType="BIGINT"/>
+        <result column="total_num" property="totalNum" jdbcType="INTEGER"/>
+        <result column="batch_num" property="batchNum" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="error_msg" property="errorMsg" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deletedAt" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		id, total_num, batch_num, `type`, status, error_msg, created_at, updated_at, deleted_at
+	</sql>
+
+    <select id="queryShowPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM nifa_prj_request_record WHERE 1=1
+        <if test="status !=null and status !=''">
+            AND STATUS = #{status}
+        </if>
+        <if test="startTime != null and startTime !=''">
+            <![CDATA[
+            AND created_at >= #{startTime}
+            ]]>
+        </if>
+        <if test="endTime!= null and endTime !=''">
+            <![CDATA[
+            AND created_at <= #{endTime}
+            ]]>
+        </if>
+        ORDER BY id DESC
+        <![CDATA[ LIMIT 100]]>
+    </select>
+
+    <select id="queryCount" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM nifa_prj_request_record WHERE 1=1
+        <if test="status !=null and status !=''">
+            AND STATUS = #{status}
+        </if>
+        <if test="startTime != null and startTime !=''">
+            <![CDATA[
+            AND created_at >= #{startTime}
+            ]]>
+        </if>
+        <if test="endTime!= null and endTime !=''">
+            <![CDATA[
+            AND created_at <= #{endTime}
+            ]]>
+        </if>
+    </select>
+
+</mapper>
