@@ -847,13 +847,13 @@
                         sortable: false,
                         formatter: function (value, row, index) {
                             if ("项目 + 自然人" == value) {
-                                return "<font color='green'>项目 + 自然人</font>";
+                                return "<font color='green'>"+ value +"</font>";
                             }
                             if ("项目 + 法人" == value) {
-                                return "<font color='#00ffff'>项目 + 法人</font>";
+                                return "<font color='#00ffff'>"+ value +"</font>";
                             }
                             if ("项目信息变更" == value) {
-                                return "<font color='blue'>项目信息变更</font>";
+                                return "<font color='blue'>"+ value +"</font>";
                             }
                             return "";
                         }
@@ -863,7 +863,13 @@
                         align: 'center',
                         halign: 'center',
                         valign: 'middle',
-                        sortable: false
+                        sortable: false,
+                        formatter: function (value, row, index) {
+                            if ("失败" == value) {
+                                return "<font color='red'>"+ value +"</font>";
+                            }
+                            return value;
+                        }
                     }, {
                         field: 'errorMsg',
                         title: '失败原因',
