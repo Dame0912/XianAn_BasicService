@@ -2,8 +2,7 @@ package com.xinan.cn.p2p.report.nifa.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ImmutableMap;
+import com.xinan.cn.common.service.BaseServiceAbstract;
 import com.xinan.cn.p2p.report.nifa.bean.*;
 import com.xinan.cn.p2p.report.nifa.bean.dto.*;
 import com.xinan.cn.p2p.report.nifa.bean.entities.NifaPrjInfo;
@@ -14,7 +13,6 @@ import com.xinan.cn.p2p.report.nifa.mapper.NifaPrjInfoMapper;
 import com.xinan.cn.p2p.report.nifa.mapper.NifaPrjRequestDataMapper;
 import com.xinan.cn.p2p.report.nifa.mapper.NifaPrjRequestRecordMapper;
 import com.xinan.cn.p2p.report.nifa.service.intf.NifaReportQueryService;
-import com.xinan.cn.common.service.BaseServiceAbstract;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
