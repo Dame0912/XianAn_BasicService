@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.fd.user.FDUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.p2p.litagation.bean.entities.CasesLoanerInfo">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="user_type" property="userType"/>
+        <result column="card_type" property="cardType"/>
+        <result column="card_id" property="cardId"/>
+        <result column="has_cases" property="hasCases"/>
+        <result column="is_sxbzxr" property="isSxbzxr"/>
+        <result column="civil_count_total" property="civilCountTotal"/>
+        <result column="criminal_count_total" property="criminalCountTotal"/>
+        <result column="administrative_count_total" property="administrativeCountTotal"/>
+        <result column="count_beigao" property="countBeiGao"/>
+        <result column="count_jie_beigao" property="countJieBeiGao"/>
+        <result column="count_yuangao" property="countYuanGao"/>
+        <result column="count_other" property="countOther"/>
+        <result column="money_beigao" property="moneyBeiGao"/>
+        <result column="money_jie_beigao" property="moneyJieBeiGao"/>
+        <result column="money_yuangao" property="moneyYuanGao"/>
+        <result column="money_other" property="moneyOther"/>
+        <result column="larq_stat" property="larqStat"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,user_id,`name`,user_type,card_type,card_id,has_cases,is_sxbzxr,civil_count_total,criminal_count_total,administrative_count_total,count_beigao,
+        count_jie_beigao,count_yuangao,count_other,money_beigao,money_jie_beigao,money_yuangao,money_other,larq_stat,created_at,updated_at,deleted_at
+    </sql>
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO loan_op_user.cases_loaner_info (
+            user_id,
+            `name`,
+            user_type,
+            card_type,
+            card_id,
+            has_cases,
+            is_sxbzxr,
+            civil_count_total,
+            criminal_count_total,
+            administrative_count_total,
+            count_beigao,
+            count_jie_beigao,
+            count_yuangao,
+            count_other,
+            money_beigao,
+            money_jie_beigao,
+            money_yuangao,
+            money_other,
+            larq_stat,
+            updated_at
+        )
+        VALUES
+        <foreach collection="casesLoanerInfoList" item="casesLoanerInfo" index="index" separator=",">
+            (
+                casesLoanerInfo.userId,
+                casesLoanerInfo.name,
+                casesLoanerInfo.userType,
+                casesLoanerInfo.cardType,
+                casesLoanerInfo.cardId,
+                casesLoanerInfo.hasCases,
+                casesLoanerInfo.isSxbzxr,
+                casesLoanerInfo.civilCountTotal,
+                casesLoanerInfo.criminalCountTotal,
+                casesLoanerInfo.administrativeCountTotal,
+                casesLoanerInfo.countBeiGao,
+                casesLoanerInfo.countJieBeiGao,
+                casesLoanerInfo.countYuanGao,
+                casesLoanerInfo.countOther,
+                casesLoanerInfo.moneyBeiGao,
+                casesLoanerInfo.moneyJieBeiGao,
+                casesLoanerInfo.moneyYuanGao,
+                casesLoanerInfo.moneyOther,
+                casesLoanerInfo.larqStat,
+                casesLoanerInfo.updatedAt
+            )
+        </foreach>
+    </insert>
+
+    <select id="batchQueryNatrualLoaner" resultType="com.xinan.cn.p2p.litagation.bean.LawLoanerInfo">
+        SELECT
+        `name` AS loanerName,
+        card_id AS identityNo,
+        updated_at AS lastRequestDate
+        FROM loan_op_user.cases_loaner_info
+        WHERE
+        <foreach collection="lawLoanerInfos" item="lawLoanerInfo" open="(" close=")" separator="OR">
+            (`name` = #{lawLoanerInfo.loanerName} AND card_id = #{lawLoanerInfo.identityNo})
+        </foreach>
+    </select>
+
+    <select id="batchQueryCompanyLoaner" resultType="com.xinan.cn.p2p.litagation.bean.LawLoanerInfo">
+        SELECT
+        `name` AS loanerName,
+        card_id AS identityNo,
+        updated_at AS lastRequestDate
+        FROM loan_op_user.cases_loaner_info
+        WHERE
+        <foreach collection="lawLoanerInfos" item="lawLoanerInfo" open="(" close=")" separator="OR">
+            (`name` = #{lawLoanerInfo.loanerName})
+        </foreach>
+    </select>
+
+
+    <update id="batchUpdateNaturals" parameterType="java.util.List">
+        <foreach collection="casesLoanerInfoList" item="casesLoanerInfo" index="index" open="" close="" separator=";">
+            UPDATE loan_op_user.cases_loaner_info
+            <set>
+                <if test="hasCases != null and hasCases !=''">
+                    has_cases = #{casesLoanerInfo.hasCases},
+                </if>
+                <if test="isSxbzxr != null and isSxbzxr !=''">
+                    is_sxbzxr = #{casesLoanerInfo.isSxbzxr},
+                </if>
+                <if test="civilCountTotal != null and civilCountTotal !=''">
+                    civil_count_total = #{casesLoanerInfo.civilCountTotal},
+                </if>
+                <if test="criminalCountTotal != null and criminalCountTotal !=''">
+                    criminal_count_total = #{casesLoanerInfo.criminalCountTotal},
+                </if>
+                <if test="administrativeCountTotal != null and administrativeCountTotal !=''">
+                    administrative_count_total = #{casesLoanerInfo.administrativeCountTotal},
+                </if>
+                <if test="countBeiGao != null and countBeiGao !=''">
+                    count_beigao = #{casesLoanerInfo.countBeiGao},
+                </if>
+                <if test="countJieBeiGao != null and countJieBeiGao !=''">
+                    count_jie_beigao = #{casesLoanerInfo.countJieBeiGao},
+                </if>
+                <if test="countYuanGao != null and countYuanGao !=''">
+                    count_yuangao = #{casesLoanerInfo.countYuanGao},
+                </if>
+                <if test="countOther != null and countOther !=''">
+                    count_other = #{casesLoanerInfo.countOther},
+                </if>
+                <if test="moneyBeiGao != null and moneyBeiGao !=''">
+                    money_beigao = #{casesLoanerInfo.moneyBeiGao},
+                </if>
+                <if test="moneyJieBeiGao != null and moneyJieBeiGao !=''">
+                    money_jie_beigao = #{casesLoanerInfo.moneyJieBeiGao},
+                </if>
+                <if test="moneyYuanGao != null and moneyYuanGao !=''">
+                    money_yuangao = #{casesLoanerInfo.moneyYuanGao},
+                </if>
+                <if test="moneyOther != null and moneyOther !=''">
+                    money_other = #{casesLoanerInfo.moneyOther},
+                </if>
+                <if test="larqStat != null and larqStat !=''">
+                    larq_stat = #{casesLoanerInfo.larqStat},
+                </if>
+                <if test="updatedAt != null and updatedAt !=''">
+                    updated_at = #{casesLoanerInfo.updatedAt},
+                </if>
+            </set>
+            WHERE `name` = #{casesLoanerInfo.name} AND card_id = #{casesLoanerInfo.cardId}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateCompanys" parameterType="java.util.List">
+        <foreach collection="casesLoanerInfoList" item="casesLoanerInfo" index="index" open="" close="" separator=";">
+            UPDATE loan_op_user.cases_loaner_info
+            <set>
+                <if test="hasCases != null and hasCases !=''">
+                    has_cases = #{casesLoanerInfo.hasCases},
+                </if>
+                <if test="isSxbzxr != null and isSxbzxr !=''">
+                    is_sxbzxr = #{casesLoanerInfo.isSxbzxr},
+                </if>
+                <if test="civilCountTotal != null and civilCountTotal !=''">
+                    civil_count_total = #{casesLoanerInfo.civilCountTotal},
+                </if>
+                <if test="criminalCountTotal != null and criminalCountTotal !=''">
+                    criminal_count_total = #{casesLoanerInfo.criminalCountTotal},
+                </if>
+                <if test="administrativeCountTotal != null and administrativeCountTotal !=''">
+                    administrative_count_total = #{casesLoanerInfo.administrativeCountTotal},
+                </if>
+                <if test="countBeiGao != null and countBeiGao !=''">
+                    count_beigao = #{casesLoanerInfo.countBeiGao},
+                </if>
+                <if test="countJieBeiGao != null and countJieBeiGao !=''">
+                    count_jie_beigao = #{casesLoanerInfo.countJieBeiGao},
+                </if>
+                <if test="countYuanGao != null and countYuanGao !=''">
+                    count_yuangao = #{casesLoanerInfo.countYuanGao},
+                </if>
+                <if test="countOther != null and countOther !=''">
+                    count_other = #{casesLoanerInfo.countOther},
+                </if>
+                <if test="moneyBeiGao != null and moneyBeiGao !=''">
+                    money_beigao = #{casesLoanerInfo.moneyBeiGao},
+                </if>
+                <if test="moneyJieBeiGao != null and moneyJieBeiGao !=''">
+                    money_jie_beigao = #{casesLoanerInfo.moneyJieBeiGao},
+                </if>
+                <if test="moneyYuanGao != null and moneyYuanGao !=''">
+                    money_yuangao = #{casesLoanerInfo.moneyYuanGao},
+                </if>
+                <if test="moneyOther != null and moneyOther !=''">
+                    money_other = #{casesLoanerInfo.moneyOther},
+                </if>
+                <if test="larqStat != null and larqStat !=''">
+                    larq_stat = #{casesLoanerInfo.larqStat},
+                </if>
+                <if test="updatedAt != null and updatedAt !=''">
+                    updated_at = #{casesLoanerInfo.updatedAt},
+                </if>
+            </set>
+            WHERE `name` = #{casesLoanerInfo.name}
+        </foreach>
+    </update>
+
+
+</mapper>

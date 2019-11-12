@@ -216,5 +216,23 @@ public class DateUtil {
         return (int) (msll / (1000));
     }
 
+    /**
+     * 判断时间是否在指定时间之内
+     *
+     * @param time 判断的时间
+     * @param days 天数
+     * @return boolean
+     */
+    public static boolean isLatestDate(Date time, int days) {
+        Calendar calendar = Calendar.getInstance();  //得到日历
+        calendar.setTime(new Date());//把当前时间赋给日历
+        calendar.add(Calendar.DAY_OF_MONTH, -days);  //设置为7天前
+        Date beforeDays = calendar.getTime();   //得到7天前的时间
+        if (beforeDays.getTime() < time.getTime()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

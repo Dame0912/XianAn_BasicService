@@ -73,4 +73,10 @@
         from loan_op_asset.loan WHERE apply_id = #{applyId} and status != 400
     </select>
 
+    <select id="queryUnclearLoanPage" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from loan_op_asset.loan WHERE apply_id = #{applyId} and status != 400
+    </select>
+
 </mapper>

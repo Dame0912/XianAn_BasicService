@@ -73,4 +73,18 @@
         from loan_op_asset.loan WHERE apply_id = #{applyId} and status != 400
     </select>
 
+
+    <select id="queryAllUnclearLoanerInfoPage" resultType="com.xinan.cn.p2p.litagation.bean.LawLoanerInfo">
+        SELECT
+        base.loaner_name AS loanerName,
+        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, '1', '2') AS loanerType,
+        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, '1', '') AS identityType,
+        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, base.loaner_card_id, '') AS identityNo
+        FROM loan_op_asset.loan loan
+        INNER JOIN loan_op_asset.lend_base base ON loan.plan_id = base.plan_id
+        AND loan.status IN (6,7)
+        ORDER BY loan.id DESC
+		LIMIT ${begin}, ${end}
+    </select>
+
 </mapper>
