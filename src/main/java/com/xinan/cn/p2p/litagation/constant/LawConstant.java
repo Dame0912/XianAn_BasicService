@@ -1,7 +1,5 @@
 package com.xinan.cn.p2p.litagation.constant;
 
-import com.xinan.cn.common.bean.PageParam;
-
 /**
  * 涉诉查询常量
  */
