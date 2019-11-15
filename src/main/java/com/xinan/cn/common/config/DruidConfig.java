@@ -1,11 +1,11 @@
 package com.xinan.cn.common.config;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.sql.DataSource;
 
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -27,7 +27,11 @@ public class DruidConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource druid() {
-        return new DruidDataSource();
+        DruidDataSource druidDataSource = new DruidDataSource();
+        List filterList = new ArrayList<>();
+        filterList.add(wallFilter());
+        druidDataSource.setProxyFilters(filterList);
+        return druidDataSource;
     }
 
     // 配置Druid的监控
@@ -55,5 +59,22 @@ public class DruidConfig {
         bean.setInitParameters(initParams);
         bean.setUrlPatterns(Arrays.asList("/*"));// 拦截所有请求
         return bean;
+    }
+
+
+    // 下面为了保证可以实现批量操作
+    @Bean
+    public WallFilter wallFilter() {
+        WallFilter wallFilter = new WallFilter();
+        wallFilter.setConfig(wallConfig());
+        return wallFilter;
+    }
+
+    @Bean(name = "wallConfig")
+    public WallConfig wallConfig() {
+        WallConfig wallConfig = new WallConfig();
+        wallConfig.setMultiStatementAllow(true);//允许一次执行多条语句
+        wallConfig.setNoneBaseStatementAllow(true);//允许一次执行多条语句
+        return wallConfig;
     }
 }

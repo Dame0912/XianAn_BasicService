@@ -8,8 +8,6 @@ public interface OpenLoanService {
 
     /**
      * 查询所有未结清人员的基本信息
-     *
-     * @return
      */
     RequestResult queryAllUnclearLoanerInfoPage(Map<String, Object> param);
 }

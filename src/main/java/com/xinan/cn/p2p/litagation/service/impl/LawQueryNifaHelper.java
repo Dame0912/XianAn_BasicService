@@ -2,6 +2,7 @@ package com.xinan.cn.p2p.litagation.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord;
 import com.xinan.cn.p2p.litagation.bean.nifa.*;
 import com.xinan.cn.p2p.litagation.constant.LawConstant;
 import com.xinan.cn.p2p.litagation.util.BeanConvertUtil;
@@ -47,10 +48,12 @@ public class LawQueryNifaHelper implements LawConstant {
 
         // 失信人员：罗勇（522423196807156733）   王建华（520201195507100038）
         // 正常：姚桂华（340202198006082827）
-        natural.setName("王建华");
-        natural.setCardNo("522423196807156733");
 
-        String reponseStr = sendPost(LawRequestConst.NATRUAL_PATH, natural);
+        // 徐亮(340827198610200076)  王震(340121197612280435)
+        natural.setName("王震");
+        natural.setCardNo("340121197612280435");
+
+        String reponseStr = sendPost(LawRequestConst.NATRUAL_PATH, natural, new CasesRequestRecord());
         System.out.println(reponseStr);
 
         LawResultResponse nifaLawMsgResponse = JSONObject.parseObject(reponseStr, LawResultResponse.class);
@@ -70,7 +73,7 @@ public class LawQueryNifaHelper implements LawConstant {
     }
 
     public static void org() {
-        OrgQueryRequest org = new OrgQueryRequest();
+        CompanyQueryRequest org = new CompanyQueryRequest();
         org.setAppKey(LawRequestConst.APP_KEY);
         org.setIndustrType(LawRequestConst.INDUSTR_TYPE);
         org.setProductType(LawRequestConst.PRODUCT_TYPE);
@@ -82,9 +85,11 @@ public class LawQueryNifaHelper implements LawConstant {
 
         // 失信企业：南京中脉科技发展有限公司    马鞍山市华夏玻璃有限公司
         // 正常：安徽新安左右贷金融服务有限公司
-        org.setName("南京中脉科技发展有限公司");
 
-        String reponseStr = sendPost(LawRequestConst.ORG_PATH, org);
+        // 安徽海久装饰工程有限责任公司   阜阳商厦同济投资有限公司    安徽宣城建丰房地产开发有限公司
+        org.setName("安徽宣城建丰房地产开发有限公司");
+
+        String reponseStr = sendPost(LawRequestConst.ORG_PATH, org, new CasesRequestRecord());
         System.out.println(reponseStr);
 
         LawResultResponse nifaLawMsgResponse = JSONObject.parseObject(reponseStr, LawResultResponse.class);
@@ -96,8 +101,8 @@ public class LawQueryNifaHelper implements LawConstant {
 
     public static void main(String[] args) {
         try {
-            natural(); // 个人
-            //  org(); // 企业
+            // natural(); // 个人
+            org(); // 企业
 
 //            if (msg == null || msg.trim().length() == 0) {
 //            }
@@ -120,7 +125,7 @@ public class LawQueryNifaHelper implements LawConstant {
     /**
      * 发送报文
      */
-    public static String sendPost(String url, LawQueryBasic requestObj) {
+    public static String sendPost(String url, LawQueryBasic requestObj, CasesRequestRecord casesRequestRecord) {
         try {
             logger.info("LawQueryNifaHelper.sendPost,开始,requestObj:{}", JSON.toJSONString(requestObj));
 
@@ -150,10 +155,12 @@ public class LawQueryNifaHelper implements LawConstant {
                 return result;
             }
             logger.error("LawQueryNifaHelper.sendPost,失败,状态码：{}", code);
+            casesRequestRecord.setResponseCodeMsg("请求失败,HTTP状态码:" + code);
             httpClient.close();
             throw new RuntimeException();
         } catch (Exception e) {
             logger.error("LawQueryNifaHelper.sendPost,异常,e：{}", e);
+            casesRequestRecord.setResponseCodeMsg("请求失败,异常:" + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -169,8 +176,8 @@ public class LawQueryNifaHelper implements LawConstant {
             String cardNo = ((NaturalQueryRequest) requestObj).getCardNo();
             cardNo = encrypt3DESAndEncodeBase64(cardNo.getBytes("UTF-8"));
             signParameters.put(LawRequestConst.CARD_NO, cardNo);
-        } else if (requestObj instanceof OrgQueryRequest) {
-            name = ((OrgQueryRequest) requestObj).getName();
+        } else if (requestObj instanceof CompanyQueryRequest) {
+            name = ((CompanyQueryRequest) requestObj).getName();
         }
         name = encrypt3DESAndEncodeBase64(name.getBytes("UTF-8"));
         signParameters.put(LawRequestConst.NAME, name);

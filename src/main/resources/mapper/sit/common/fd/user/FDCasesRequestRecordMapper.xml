@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinan.cn.common.mapper.fd.user.FDCasesRequestRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="request_type" property="requestType"/>
+        <result column="status" property="status"/>
+        <result column="response_code" property="responseCode"/>
+        <result column="response_code_msg" property="responseCodeMsg"/>
+        <result column="request_data" property="requestData"/>
+        <result column="response_data" property="responseData"/>
+        <result column="business_id" property="businessId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO loan_op_user.cases_request_record (
+            user_id,
+            request_type,
+            status,
+            request_data,
+            business_id
+        )
+        VALUES
+        (
+            #{userId},
+            #{requestType},
+            #{status},
+            #{requestData},
+            #{businessId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord">
+        UPDATE loan_op_user.cases_request_record
+        <set>
+            <if test="status != null and status !=''">
+                status = #{status},
+            </if>
+            <if test="responseCode != null and responseCode !=''">
+                response_code = #{responseCode},
+            </if>
+            <if test="responseCodeMsg != null and responseCodeMsg !=''">
+                response_code_msg = #{responseCodeMsg},
+            </if>
+            <if test="responseData != null and responseData !=''">
+                response_data = #{responseData},
+            </if>
+            <if test="updatedAt != null">
+                updated_at = #{updatedAt}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

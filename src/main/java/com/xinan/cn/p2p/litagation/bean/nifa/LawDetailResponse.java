@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 public class LawDetailResponse implements Serializable {
-    //count;
+
     /**
      * 是否涉案 0： 未涉案； 1： 涉案
      */

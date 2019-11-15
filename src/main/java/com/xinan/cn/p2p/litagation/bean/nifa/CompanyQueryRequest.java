@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 企业查询请求参数
  */
 @Data
-public class OrgQueryRequest extends LawQueryBasic implements Serializable {
+public class CompanyQueryRequest extends LawQueryBasic implements Serializable {
     /**
      * 名称（3des 加密后做 base64 编码）
      */

@@ -5,59 +5,100 @@ package com.xinan.cn.p2p.litagation.constant;
  */
 public interface LawConstant {
 
+    String ZERO = "0";
+
+    String ONE = "1";
+
     /**
      * 天数
      */
     int DAYS_LIMIT = 7;
 
+    /**
+     * 重复次数
+     */
     int COUNT_LIMIT = 5;
 
-    String ZERO = "0";
+    interface LawApiResponceCodeConst {
 
-    String ONE = "1";
+        /**
+         * 参数违反接口约定：
+         * 请求参数不合法
+         * 返回参数不合法
+         */
+        String CODE_9998 = "9998";
+        String CODE_9998_CN = "参数违反接口约定";
 
-    interface LawLoanQueryPage {
-        String BEGIN = "begin";
-        String END = "end";
-        int MAX_SIZE = 50;
+        /**
+         * 系统未定义异常
+         */
+        String CODE_9999 = "9999";
+        String CODE_9999_CN = "系统未定义异常";
+    }
+
+    interface LawReqRecodeConst {
+        /**
+         * 等待
+         */
+        Integer WAITING = 0;
+        /**
+         * 失败
+         */
+        Integer FAIL = 1;
+        /**
+         * 成功
+         */
+        Integer SUCCESS = 2;
     }
 
     /**
-     * 借款人类型
+     * 分页常量
      */
-    interface LawIdentityTypeConst {
+    interface LawLoanQueryPage {
+        /**
+         * 开始标识
+         */
+        String BEGIN = "begin";
+
+        /**
+         * 结束标识
+         */
+        String END = "end";
+
+        /**
+         * 每页最大数量
+         */
+        Integer MAX_SIZE = 50;
+    }
+
+    /**
+     * 证件类型
+     */
+    interface LawCardTypeConst {
         /**
          * 身份证
          */
-        String ID_CARD = "1";
-    }
+        Integer IDENTITY_CARD = 1;
 
+        /**
+         * 营业执照
+         */
+        Integer BUSINESS_LICENSE = 2;
+    }
 
     /**
      * 借款人类型
      */
-    interface LawLoanerTypeConst {
+    interface LawUserTypeConst {
         /**
-         * 自然人
+         * 个人
          */
-        String NATURAL = "1";
+        Integer NATURAL = 1;
 
         /**
          * 企业
          */
-        String COMPANY = "2";
-    }
-
-    /**
-     * 响应码
-     */
-    interface LawResponseCodeConst {
-        String CODE_0000 = "0000";
-        String CODE_0000_CN = "查询成功";
-        String CODE_0001 = "0001";
-        String CODE_0001_CN = "请求成功，但未查询到信息";
-        String CODE_9999 = "9999";
-        String CODE_9999_CN = "系统异常";
+        Integer COMPANY = 2;
     }
 
     /**
@@ -111,8 +152,10 @@ public interface LawConstant {
         String ORG_PATH = "http://auth.nifa.org.cn:9082/litigation-service/v1.0/service/verify/org";
     }
 
-    interface LawResponseConst{
-
+    /**
+     * 响应报文相关常量
+     */
+    interface LawResponseConst {
         String COUNT = "count";
     }
 

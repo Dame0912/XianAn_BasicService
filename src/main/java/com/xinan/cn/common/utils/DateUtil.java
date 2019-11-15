@@ -228,7 +228,7 @@ public class DateUtil {
         calendar.setTime(new Date());//把当前时间赋给日历
         calendar.add(Calendar.DAY_OF_MONTH, -days);  //设置为7天前
         Date beforeDays = calendar.getTime();   //得到7天前的时间
-        if (beforeDays.getTime() < time.getTime()) {
+        if (beforeDays.getTime() < time.getTime()) { //7天内
             return true;
         } else {
             return false;

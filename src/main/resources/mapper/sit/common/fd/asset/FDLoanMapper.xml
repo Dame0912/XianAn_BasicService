@@ -74,15 +74,21 @@
     </select>
 
 
-    <select id="queryAllUnclearLoanerInfoPage" resultType="com.xinan.cn.p2p.litagation.bean.LawLoanerInfo">
+    <select id="getAllUnclearLoanerInfoPage" resultType="com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo">
         SELECT
-        base.loaner_name AS loanerName,
-        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, '1', '2') AS loanerType,
-        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, '1', '') AS identityType,
-        IF(LENGTH(TRIM(base.loaner_name)) &lt;= 12, base.loaner_card_id, '') AS identityNo
+        users.user_id AS userId,
+        IF(info.lend_user_type = 1, users.user_name, enterprise.customer_name) AS name,
+        IF(info.lend_user_type = 1, 1, 2) AS userType,
+        IF(info.lend_user_type = 1, 1, 2) AS cardType,
+        IF(info.lend_user_type = 1, users.card_id, enterprise.business_license) AS cardId
         FROM loan_op_asset.loan loan
-        INNER JOIN loan_op_asset.lend_base base ON loan.plan_id = base.plan_id
-        AND loan.status IN (6,7)
+        LEFT JOIN loan_op_asset.`user_info` users ON loan.apply_id = users.order_id
+        LEFT JOIN loan_op_asset.order_info info ON loan.apply_id = info.partner_order_id
+        LEFT JOIN loan_op_asset.enterprise_info enterprise ON users.user_id = enterprise.user_id
+        WHERE loan.status IN (6,7)
+        AND users.user_relation = 1
+        AND users.status = 0
+        AND info.status = 0
         ORDER BY loan.id DESC
 		LIMIT ${begin}, ${end}
     </select>

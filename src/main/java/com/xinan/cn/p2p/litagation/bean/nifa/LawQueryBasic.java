@@ -34,8 +34,4 @@ public class LawQueryBasic implements Serializable {
      */
     public String clientTime;
 
-    /**
-     * 签名数据
-     */
-    // public String sign;
 }
