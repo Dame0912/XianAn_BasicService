@@ -15,14 +15,16 @@ public interface FDUserMapper {
 
     int updateOne(CasesLoanerInfo casesLoanerInfo);
 
-    List<LawLoanerBasicInfo> batchQueryNatrualLoaner(@Param("lawLoanerBasicInfoList") List<LawLoanerBasicInfo> lawLoanerBasicInfoList);
+    //List<LawLoanerBasicInfo> batchQueryNatrualLoaner(@Param("lawLoanerBasicInfoList") List<LawLoanerBasicInfo> lawLoanerBasicInfoList);
+    //List<LawLoanerBasicInfo> batchQueryCompanyLoaner(@Param("lawLoanerBasicInfoList") List<LawLoanerBasicInfo> lawLoanerBasicInfoList);
 
-    List<LawLoanerBasicInfo> batchQueryCompanyLoaner(@Param("lawLoanerBasicInfoList") List<LawLoanerBasicInfo> lawLoanerBasicInfoList);
+    List<LawLoanerBasicInfo> batchQueryLoaner(@Param("lawLoanerBasicInfoList") List<LawLoanerBasicInfo> lawLoanerBasicInfoList);
 
     int batchInsert(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
 
-    int batchUpdateNaturals(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
+    int batchUpdate(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
+    //int batchUpdateNaturals(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
 
-    int batchUpdateCompanys(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
+    //int batchUpdateCompanys(@Param("casesLoanerInfoList") List<CasesLoanerInfo> casesLoanerInfoList);
 
 }

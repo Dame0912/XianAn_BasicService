@@ -26,6 +26,14 @@ public interface LawConstant {
          * 请求参数不合法
          * 返回参数不合法
          */
+        String CODE_9997 = "9997";
+        String CODE_9997_CN = "请求中互金查询异常";
+
+        /**
+         * 参数违反接口约定：
+         * 请求参数不合法
+         * 返回参数不合法
+         */
         String CODE_9998 = "9998";
         String CODE_9998_CN = "参数违反接口约定";
 

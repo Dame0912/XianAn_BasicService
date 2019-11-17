@@ -2,11 +2,13 @@ package com.xinan.cn.p2p.litagation.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xinan.cn.common.utils.AppException;
 import com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord;
 import com.xinan.cn.p2p.litagation.bean.nifa.*;
 import com.xinan.cn.p2p.litagation.constant.LawConstant;
 import com.xinan.cn.p2p.litagation.util.BeanConvertUtil;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -53,7 +55,7 @@ public class LawQueryNifaHelper implements LawConstant {
         natural.setName("王震");
         natural.setCardNo("340121197612280435");
 
-        String reponseStr = sendPost(LawRequestConst.NATRUAL_PATH, natural, new CasesRequestRecord());
+        String reponseStr = sendPost(LawRequestConst.NATRUAL_PATH, natural);
         System.out.println(reponseStr);
 
         LawResultResponse nifaLawMsgResponse = JSONObject.parseObject(reponseStr, LawResultResponse.class);
@@ -89,7 +91,7 @@ public class LawQueryNifaHelper implements LawConstant {
         // 安徽海久装饰工程有限责任公司   阜阳商厦同济投资有限公司    安徽宣城建丰房地产开发有限公司
         org.setName("安徽宣城建丰房地产开发有限公司");
 
-        String reponseStr = sendPost(LawRequestConst.ORG_PATH, org, new CasesRequestRecord());
+        String reponseStr = sendPost(LawRequestConst.ORG_PATH, org);
         System.out.println(reponseStr);
 
         LawResultResponse nifaLawMsgResponse = JSONObject.parseObject(reponseStr, LawResultResponse.class);
@@ -125,7 +127,7 @@ public class LawQueryNifaHelper implements LawConstant {
     /**
      * 发送报文
      */
-    public static String sendPost(String url, LawQueryBasic requestObj, CasesRequestRecord casesRequestRecord) {
+    public static String sendPost(String url, LawQueryBasic requestObj) {
         try {
             logger.info("LawQueryNifaHelper.sendPost,开始,requestObj:{}", JSON.toJSONString(requestObj));
 
@@ -155,13 +157,11 @@ public class LawQueryNifaHelper implements LawConstant {
                 return result;
             }
             logger.error("LawQueryNifaHelper.sendPost,失败,状态码：{}", code);
-            casesRequestRecord.setResponseCodeMsg("请求失败,HTTP状态码:" + code);
             httpClient.close();
-            throw new RuntimeException();
+            throw new RuntimeException("请求失败,HTTP状态码:" + code);
         } catch (Exception e) {
             logger.error("LawQueryNifaHelper.sendPost,异常,e：{}", e);
-            casesRequestRecord.setResponseCodeMsg("请求失败,异常:" + e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw new AppException(LawApiResponceCodeConst.CODE_9997, StringUtils.isBlank(e.getMessage()) ? LawApiResponceCodeConst.CODE_9997_CN : e.getMessage());
         }
     }
 

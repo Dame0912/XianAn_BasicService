@@ -196,7 +196,7 @@
         </foreach>
     </insert>
 
-    <select id="batchQueryNatrualLoaner" resultType="com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo">
+    <!--<select id="batchQueryNatrualLoaner" resultType="com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo">
         SELECT
         `name` AS name,
         card_id AS cardId,
@@ -218,9 +218,78 @@
         <foreach collection="lawLoanerBasicInfoList" item="lawLoanerInfo" open="(" close=")" separator="OR">
             (`name` = #{lawLoanerInfo.name})
         </foreach>
+    </select>-->
+
+    <select id="batchQueryLoaner" resultType="com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo">
+        SELECT
+        user_id AS userId,
+        `name` AS name,
+        user_type AS userType,
+        card_type AS cardType,
+        card_id AS cardId,
+        updated_at AS lastRequestDate
+        FROM loan_op_user.cases_loaner_info
+        WHERE user_id IN
+        <foreach collection="lawLoanerBasicInfoList" item="lawLoanerInfo" open="(" close=")" separator=",">
+            user_id = #{lawLoanerInfo.userId}
+        </foreach>
     </select>
 
-    <update id="batchUpdateNaturals" parameterType="java.util.List">
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="casesLoanerInfoList" item="casesLoanerInfo" index="index" open="" close="" separator=";">
+            UPDATE loan_op_user.cases_loaner_info
+            <set>
+                <if test="casesLoanerInfo.hasCases != null and casesLoanerInfo.hasCases !=''">
+                    has_cases = #{casesLoanerInfo.hasCases},
+                </if>
+                <if test="casesLoanerInfo.isSxbzxr != null and casesLoanerInfo.isSxbzxr !=''">
+                    is_sxbzxr = #{casesLoanerInfo.isSxbzxr},
+                </if>
+                <if test="casesLoanerInfo.civilCountTotal != null and casesLoanerInfo.civilCountTotal !=''">
+                    civil_count_total = #{casesLoanerInfo.civilCountTotal},
+                </if>
+                <if test="casesLoanerInfo.criminalCountTotal != null and casesLoanerInfo.criminalCountTotal !=''">
+                    criminal_count_total = #{casesLoanerInfo.criminalCountTotal},
+                </if>
+                <if test="casesLoanerInfo.administrativeCountTotal != null and casesLoanerInfo.administrativeCountTotal !=''">
+                    administrative_count_total = #{casesLoanerInfo.administrativeCountTotal},
+                </if>
+                <if test="casesLoanerInfo.countBeiGao != null and casesLoanerInfo.countBeiGao !=''">
+                    count_beigao = #{casesLoanerInfo.countBeiGao},
+                </if>
+                <if test="casesLoanerInfo.countJieBeiGao != null and casesLoanerInfo.countJieBeiGao !=''">
+                    count_jie_beigao = #{casesLoanerInfo.countJieBeiGao},
+                </if>
+                <if test="casesLoanerInfo.countYuanGao != null and casesLoanerInfo.countYuanGao !=''">
+                    count_yuangao = #{casesLoanerInfo.countYuanGao},
+                </if>
+                <if test="casesLoanerInfo.countOther != null and casesLoanerInfo.countOther !=''">
+                    count_other = #{casesLoanerInfo.countOther},
+                </if>
+                <if test="casesLoanerInfo.moneyBeiGao != null and casesLoanerInfo.moneyBeiGao !=''">
+                    money_beigao = #{casesLoanerInfo.moneyBeiGao},
+                </if>
+                <if test="casesLoanerInfo.moneyJieBeiGao != null and casesLoanerInfo.moneyJieBeiGao !=''">
+                    money_jie_beigao = #{casesLoanerInfo.moneyJieBeiGao},
+                </if>
+                <if test="casesLoanerInfo.moneyYuanGao != null and casesLoanerInfo.moneyYuanGao !=''">
+                    money_yuangao = #{casesLoanerInfo.moneyYuanGao},
+                </if>
+                <if test="casesLoanerInfo.moneyOther != null and casesLoanerInfo.moneyOther !=''">
+                    money_other = #{casesLoanerInfo.moneyOther},
+                </if>
+                <if test="casesLoanerInfo.larqStat != null and casesLoanerInfo.larqStat !=''">
+                    larq_stat = #{casesLoanerInfo.larqStat},
+                </if>
+                <if test="casesLoanerInfo.updatedAt != null">
+                    updated_at = #{casesLoanerInfo.updatedAt},
+                </if>
+            </set>
+            WHERE user_id = #{casesLoanerInfo.userId}
+        </foreach>
+    </update>
+
+    <!--<update id="batchUpdateNaturals" parameterType="java.util.List">
         <foreach collection="casesLoanerInfoList" item="casesLoanerInfo" index="index" open="" close="" separator=";">
             UPDATE loan_op_user.cases_loaner_info
             <set>
@@ -326,7 +395,7 @@
             </set>
             WHERE `name` = #{casesLoanerInfo.name}
         </foreach>
-    </update>
+    </update>-->
 
 
 </mapper>

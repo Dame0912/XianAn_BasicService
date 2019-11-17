@@ -3,6 +3,7 @@ package com.xinan.cn;
 import com.xinan.cn.common.mapper.fd.asset.FDLoanMapper;
 import com.xinan.cn.common.mapper.fd.user.FDUserMapper;
 import com.xinan.cn.common.utils.DateUtil;
+import com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo;
 import com.xinan.cn.p2p.litagation.bean.entities.CasesLoanerInfo;
 import com.xinan.cn.p2p.litagation.service.intf.LawInfoQueryService;
 import org.junit.Test;
@@ -50,31 +51,31 @@ public class LawTests {
 
     @Test
     public void fdUserMapper_test() {
-        List<LawAssetLoanerInfo> lawAssetLoanerInfos = new ArrayList<>();
-        LawAssetLoanerInfo lawAssetLoanerInfo1 = new LawAssetLoanerInfo();
-        lawAssetLoanerInfo1.setName("黄尧");
-        lawAssetLoanerInfo1.setCardId("340403198403270618");
-        lawAssetLoanerInfos.add(lawAssetLoanerInfo1);
+        List<LawLoanerBasicInfo> LawLoanerBasicInfos = new ArrayList<>();
+        LawLoanerBasicInfo LawLoanerBasicInfo1 = new LawLoanerBasicInfo();
+        LawLoanerBasicInfo1.setName("黄尧");
+        LawLoanerBasicInfo1.setCardId("340403198403270618");
+        LawLoanerBasicInfos.add(LawLoanerBasicInfo1);
 
-        LawAssetLoanerInfo lawAssetLoanerInfo2 = new LawAssetLoanerInfo();
-        lawAssetLoanerInfo2.setName("余俊");
-        lawAssetLoanerInfo2.setCardId("340104196511142059");
-        lawAssetLoanerInfos.add(lawAssetLoanerInfo2);
+        LawLoanerBasicInfo LawLoanerBasicInfo2 = new LawLoanerBasicInfo();
+        LawLoanerBasicInfo2.setName("余俊");
+        LawLoanerBasicInfo2.setCardId("340104196511142059");
+        LawLoanerBasicInfos.add(LawLoanerBasicInfo2);
 
-        LawAssetLoanerInfo lawAssetLoanerInfo3 = new LawAssetLoanerInfo();
-        lawAssetLoanerInfo3.setName("张建平");
-        lawAssetLoanerInfo3.setCardId("340103198707052517");
-        lawAssetLoanerInfos.add(lawAssetLoanerInfo3);
+        LawLoanerBasicInfo LawLoanerBasicInfo3 = new LawLoanerBasicInfo();
+        LawLoanerBasicInfo3.setName("张建平");
+        LawLoanerBasicInfo3.setCardId("340103198707052517");
+        LawLoanerBasicInfos.add(LawLoanerBasicInfo3);
 
-        LawAssetLoanerInfo lawAssetLoanerInfo4 = new LawAssetLoanerInfo();
-        lawAssetLoanerInfo4.setName("张玉霞");
-        lawAssetLoanerInfo4.setCardId("340103196912263541");
-        lawAssetLoanerInfos.add(lawAssetLoanerInfo4);
+        LawLoanerBasicInfo LawLoanerBasicInfo4 = new LawLoanerBasicInfo();
+        LawLoanerBasicInfo4.setName("张玉霞");
+        LawLoanerBasicInfo4.setCardId("340103196912263541");
+        LawLoanerBasicInfos.add(LawLoanerBasicInfo4);
 
-        System.out.println(lawAssetLoanerInfos);
+        System.out.println(LawLoanerBasicInfos);
 
-        List<LawAssetLoanerInfo> queryLawAssetLoanerInfos = fdUserMapper.batchQueryNatrualLoaner(lawAssetLoanerInfos);
+        List<LawLoanerBasicInfo> queryLawLoanerBasicInfos = fdUserMapper.batchQueryNatrualLoaner(LawLoanerBasicInfos);
 
-        System.out.println(queryLawAssetLoanerInfos);
+        System.out.println(queryLawLoanerBasicInfos);
     }
 }
