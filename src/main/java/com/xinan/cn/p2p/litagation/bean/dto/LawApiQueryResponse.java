@@ -31,6 +31,6 @@ public class LawApiQueryResponse implements Serializable {
     /**
      * 详情
      */
-    private LawDetailResponse lawDetailResponse;
+    private LawDetailResponse data;
 
 }

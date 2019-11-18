@@ -22,6 +22,12 @@ public interface LawConstant {
     interface LawApiResponceCodeConst {
 
         /**
+         * 成功
+         */
+        String CODE_0000 = "0000";
+        String CODE_0000_CN = "成功";
+
+        /**
          * 参数违反接口约定：
          * 请求参数不合法
          * 返回参数不合法

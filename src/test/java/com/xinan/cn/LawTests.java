@@ -1,10 +1,10 @@
 package com.xinan.cn;
 
-import com.xinan.cn.common.mapper.fd.asset.FDLoanMapper;
-import com.xinan.cn.common.mapper.fd.user.FDUserMapper;
+import com.alibaba.fastjson.JSON;
 import com.xinan.cn.common.utils.DateUtil;
-import com.xinan.cn.p2p.litagation.bean.dto.LawLoanerBasicInfo;
-import com.xinan.cn.p2p.litagation.bean.entities.CasesLoanerInfo;
+import com.xinan.cn.p2p.litagation.bean.dto.LawApiQueryRequest;
+import com.xinan.cn.p2p.litagation.bean.dto.LawApiQueryResponse;
+import com.xinan.cn.p2p.litagation.constant.LawConstant;
 import com.xinan.cn.p2p.litagation.service.intf.LawInfoQueryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,17 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @ActiveProfiles("sit")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class LawTests {
-    @Autowired
-    private FDUserMapper fdUserMapper;
-    @Autowired
-    private FDLoanMapper fdLoanMapper;
     @Autowired
     private LawInfoQueryService lawInfoQueryService;
 
@@ -35,47 +30,25 @@ public class LawTests {
     }
 
     @Test
-    public void caseMapper_test(){
-        List<CasesLoanerInfo> insertCases = new ArrayList<>();
-        CasesLoanerInfo loanerInfo1 = new CasesLoanerInfo();
-        loanerInfo1.setUserId(1L);
-        loanerInfo1.setName("1");
-        insertCases.add(loanerInfo1);
+    public void lawInfoQueryService_queryLoanerCase() {
+        LawApiQueryRequest lawApiQueryRequest_natural = new LawApiQueryRequest();
+        lawApiQueryRequest_natural.setName("花蕊");
+        lawApiQueryRequest_natural.setUserType(LawConstant.LawUserTypeConst.NATURAL);
+        lawApiQueryRequest_natural.setUserId(1194092145406124032L);
+        lawApiQueryRequest_natural.setCardType(LawConstant.LawCardTypeConst.IDENTITY_CARD);
+        lawApiQueryRequest_natural.setCardId("342623199209123457");
+        lawApiQueryRequest_natural.setBusinessId(UUID.randomUUID().toString().replace("-", ""));
 
-        CasesLoanerInfo loanerInfo2 = new CasesLoanerInfo();
-        loanerInfo2.setUserId(2L);
-        loanerInfo2.setName("2");
-        insertCases.add(loanerInfo2);
-        fdUserMapper.batchInsert(insertCases);
+        LawApiQueryRequest lawApiQueryRequest_company = new LawApiQueryRequest();
+        lawApiQueryRequest_company.setName("合肥市包河区唐玲日用百货商行");
+        lawApiQueryRequest_company.setUserType(LawConstant.LawUserTypeConst.COMPANY);
+        lawApiQueryRequest_company.setUserId(1157179532118335488L);
+        lawApiQueryRequest_company.setCardType(LawConstant.LawCardTypeConst.BUSINESS_LICENSE);
+        lawApiQueryRequest_company.setCardId("92340111MA2TXF7E7K");
+        lawApiQueryRequest_company.setBusinessId(UUID.randomUUID().toString().replace("-", ""));
+
+        LawApiQueryResponse lawApiQueryResponse = lawInfoQueryService.queryLoanerCase(lawApiQueryRequest_natural);
+        System.out.println(JSON.toJSONString(lawApiQueryResponse));
     }
 
-    @Test
-    public void fdUserMapper_test() {
-        List<LawLoanerBasicInfo> LawLoanerBasicInfos = new ArrayList<>();
-        LawLoanerBasicInfo LawLoanerBasicInfo1 = new LawLoanerBasicInfo();
-        LawLoanerBasicInfo1.setName("黄尧");
-        LawLoanerBasicInfo1.setCardId("340403198403270618");
-        LawLoanerBasicInfos.add(LawLoanerBasicInfo1);
-
-        LawLoanerBasicInfo LawLoanerBasicInfo2 = new LawLoanerBasicInfo();
-        LawLoanerBasicInfo2.setName("余俊");
-        LawLoanerBasicInfo2.setCardId("340104196511142059");
-        LawLoanerBasicInfos.add(LawLoanerBasicInfo2);
-
-        LawLoanerBasicInfo LawLoanerBasicInfo3 = new LawLoanerBasicInfo();
-        LawLoanerBasicInfo3.setName("张建平");
-        LawLoanerBasicInfo3.setCardId("340103198707052517");
-        LawLoanerBasicInfos.add(LawLoanerBasicInfo3);
-
-        LawLoanerBasicInfo LawLoanerBasicInfo4 = new LawLoanerBasicInfo();
-        LawLoanerBasicInfo4.setName("张玉霞");
-        LawLoanerBasicInfo4.setCardId("340103196912263541");
-        LawLoanerBasicInfos.add(LawLoanerBasicInfo4);
-
-        System.out.println(LawLoanerBasicInfos);
-
-        List<LawLoanerBasicInfo> queryLawLoanerBasicInfos = fdUserMapper.batchQueryNatrualLoaner(LawLoanerBasicInfos);
-
-        System.out.println(queryLawLoanerBasicInfos);
-    }
 }
