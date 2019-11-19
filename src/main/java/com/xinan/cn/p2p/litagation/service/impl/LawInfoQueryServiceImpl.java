@@ -192,12 +192,10 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
         CasesLoanerInfo casesLoanerInfo = new CasesLoanerInfo();
 
         String reponseStr = "";
-
         Integer userType = loanerInfo.getUserType();
         try {
             if (LawUserTypeConst.NATURAL.equals(userType)) {
                 NaturalQueryRequest naturalQueryRequest = new NaturalQueryRequest(loanerInfo.getName(), loanerInfo.getCardId());
-
                 casesRequestRecord.setRequestData(JSON.toJSONString(naturalQueryRequest));
                 casesRequestRecord.setRequestType(LawUserTypeConst.NATURAL);
                 casesRequestRecord.setBusinessId(naturalQueryRequest.getTransactionNo());
@@ -207,7 +205,6 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
                 reponseStr = "{\"code\":\"0\",\"data\":\"{\\\"count\\\":{\\\"civil_count_total\\\":85,\\\"is_sxbzxr\\\":0,\\\"larq_stat\\\":\\\"2002(1),2003(3),2004(1),2007(1),2008(2),2009(2),2010(1),2012(3),2013(1),2014(7),2015(5),2016(10),2017(18),2018(22),2019(24),其他(1)\\\",\\\"money_other\\\":8,\\\"count_yuangao\\\":22,\\\"money_jie_beigao\\\":11,\\\"administrative_count_total\\\":5,\\\"count_other\\\":14,\\\"criminal_count_total\\\":0,\\\"has_cases\\\":1,\\\"count_beigao\\\":66,\\\"count_jie_beigao\\\":57,\\\"money_yuangao\\\":12,\\\"money_beigao\\\":12}}\",\"message\":\"成功\",\"requestId\":\"e0237c53605a4449abe6df89b62b913f\",\"result\":\"0\"}";
             } else if (LawUserTypeConst.COMPANY.equals(userType)) {
                 CompanyQueryRequest companyQueryRequest = new CompanyQueryRequest(loanerInfo.getName());
-
                 casesRequestRecord.setRequestData(JSON.toJSONString(companyQueryRequest));
                 casesRequestRecord.setRequestType(LawUserTypeConst.COMPANY);
                 casesRequestRecord.setBusinessId(companyQueryRequest.getTransactionNo());
@@ -216,7 +213,6 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
                 // reponseStr = LawQueryNifaHelper.sendPost(LawRequestConst.ORG_PATH, companyQueryRequest,casesRequestRecord);
                 reponseStr = "{\"code\":\"0\",\"data\":\"{\\\"count\\\":{\\\"civil_count_total\\\":14,\\\"is_sxbzxr\\\":1,\\\"larq_stat\\\":\\\"2015(6),2016(10),2017(6),2018(3),2019(3)\\\",\\\"money_other\\\":10,\\\"count_yuangao\\\":0,\\\"money_jie_beigao\\\":12,\\\"administrative_count_total\\\":0,\\\"count_other\\\":1,\\\"criminal_count_total\\\":0,\\\"has_cases\\\":1,\\\"count_beigao\\\":27,\\\"count_jie_beigao\\\":25,\\\"money_yuangao\\\":0,\\\"money_beigao\\\":12}}\",\"message\":\"成功\",\"requestId\":\"e4c61406540e41158bc483f9b34225ae\",\"result\":\"0\"}";
             }
-
 
             casesRequestRecord.setResponseData(reponseStr);
             casesRequestRecord.setUpdatedAt(new Date());
