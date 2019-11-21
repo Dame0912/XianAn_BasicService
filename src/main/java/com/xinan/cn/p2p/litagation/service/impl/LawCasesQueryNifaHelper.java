@@ -3,9 +3,8 @@ package com.xinan.cn.p2p.litagation.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xinan.cn.common.utils.AppException;
-import com.xinan.cn.p2p.litagation.bean.entities.CasesRequestRecord;
 import com.xinan.cn.p2p.litagation.bean.nifa.*;
-import com.xinan.cn.p2p.litagation.constant.LawConstant;
+import com.xinan.cn.p2p.litagation.constant.LawCasesConstant;
 import com.xinan.cn.p2p.litagation.util.BeanConvertUtil;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,8 +33,8 @@ import java.util.*;
 /**
  * 查询中互金系统获取诉讼信息
  */
-public class LawQueryNifaHelper implements LawConstant {
-    private static final Logger logger = LoggerFactory.getLogger(LawQueryNifaHelper.class);
+public class LawCasesQueryNifaHelper implements LawCasesConstant {
+    private static final Logger logger = LoggerFactory.getLogger(LawCasesQueryNifaHelper.class);
 
     public static void natural() {
         NaturalQueryRequest natural = new NaturalQueryRequest();
@@ -127,9 +126,9 @@ public class LawQueryNifaHelper implements LawConstant {
     /**
      * 发送报文
      */
-    public static String sendPost(String url, LawQueryBasic requestObj) {
+    public static String sendPost(String url, LawCasesQueryBasic requestObj) {
         try {
-            logger.info("LawQueryNifaHelper.sendPost,开始,requestObj:{}", JSON.toJSONString(requestObj));
+            logger.info("LawCasesQueryNifaHelper.sendPost,开始,requestObj:{}", JSON.toJSONString(requestObj));
 
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(url);
@@ -153,14 +152,14 @@ public class LawQueryNifaHelper implements LawConstant {
                 String result = EntityUtils.toString(responseEntity, "UTF-8");
                 EntityUtils.consume(responseEntity);
                 httpClient.close();
-                logger.info("LawQueryNifaHelper.sendPost,结束,result:{}", result);
+                logger.info("LawCasesQueryNifaHelper.sendPost,结束,result:{}", result);
                 return result;
             }
-            logger.error("LawQueryNifaHelper.sendPost,失败,状态码：{}", code);
+            logger.error("LawCasesQueryNifaHelper.sendPost,失败,状态码：{}", code);
             httpClient.close();
             throw new RuntimeException("请求失败,HTTP状态码:" + code);
         } catch (Exception e) {
-            logger.error("LawQueryNifaHelper.sendPost,异常,e：{}", e);
+            logger.error("LawCasesQueryNifaHelper.sendPost,异常,e：{}", e);
             throw new AppException(LawApiResponceCodeConst.CODE_9997, StringUtils.isBlank(e.getMessage()) ? LawApiResponceCodeConst.CODE_9997_CN : e.getMessage());
         }
     }
@@ -168,7 +167,7 @@ public class LawQueryNifaHelper implements LawConstant {
     /**
      * 数据加密签名处理
      */
-    private static String signParam(LawQueryBasic requestObj) throws Exception {
+    private static String signParam(LawCasesQueryBasic requestObj) throws Exception {
         Map<String, Object> signParameters = BeanConvertUtil.beanToMap(requestObj);
         String name = "";
         if (requestObj instanceof NaturalQueryRequest) { //个人查询
@@ -184,7 +183,7 @@ public class LawQueryNifaHelper implements LawConstant {
 
         String signValue = sign(signParameters);
         signParameters.put(LawRequestConst.SIGN, signValue);
-        logger.info("LawQueryNifaHelper.signParam，准备发送的数据：" + JSON.toJSONString(signParameters));
+        logger.info("LawCasesQueryNifaHelper.signParam，准备发送的数据：" + JSON.toJSONString(signParameters));
         return JSON.toJSONString(signParameters);
     }
 

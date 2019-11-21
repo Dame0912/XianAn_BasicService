@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.xinan.cn.common.utils.DateUtil;
 import com.xinan.cn.p2p.litagation.bean.dto.LawApiQueryRequest;
 import com.xinan.cn.p2p.litagation.bean.dto.LawApiQueryResponse;
-import com.xinan.cn.p2p.litagation.constant.LawConstant;
+import com.xinan.cn.p2p.litagation.constant.LawCasesConstant;
 import com.xinan.cn.p2p.litagation.service.intf.LawInfoQueryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,17 +33,17 @@ public class LawTests {
     public void lawInfoQueryService_queryLoanerCase() {
         LawApiQueryRequest lawApiQueryRequest_natural = new LawApiQueryRequest();
         lawApiQueryRequest_natural.setName("花蕊");
-        lawApiQueryRequest_natural.setUserType(LawConstant.LawUserTypeConst.NATURAL);
+        lawApiQueryRequest_natural.setUserType(LawCasesConstant.LawUserTypeConst.NATURAL);
         lawApiQueryRequest_natural.setUserId(1194092145406124032L);
-        lawApiQueryRequest_natural.setCardType(LawConstant.LawCardTypeConst.IDENTITY_CARD);
+        lawApiQueryRequest_natural.setCardType(LawCasesConstant.LawCardTypeConst.IDENTITY_CARD);
         lawApiQueryRequest_natural.setCardId("342623199209123457");
         lawApiQueryRequest_natural.setBusinessId(UUID.randomUUID().toString().replace("-", ""));
 
         LawApiQueryRequest lawApiQueryRequest_company = new LawApiQueryRequest();
         lawApiQueryRequest_company.setName("合肥市包河区唐玲日用百货商行");
-        lawApiQueryRequest_company.setUserType(LawConstant.LawUserTypeConst.COMPANY);
+        lawApiQueryRequest_company.setUserType(LawCasesConstant.LawUserTypeConst.COMPANY);
         lawApiQueryRequest_company.setUserId(1157179532118335488L);
-        lawApiQueryRequest_company.setCardType(LawConstant.LawCardTypeConst.BUSINESS_LICENSE);
+        lawApiQueryRequest_company.setCardType(LawCasesConstant.LawCardTypeConst.BUSINESS_LICENSE);
         lawApiQueryRequest_company.setCardId("92340111MA2TXF7E7K");
         lawApiQueryRequest_company.setBusinessId(UUID.randomUUID().toString().replace("-", ""));
 

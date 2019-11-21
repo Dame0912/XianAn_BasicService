@@ -1,9 +1,7 @@
 package com.xinan.cn.p2p.litagation.bean.nifa;
 
-import com.xinan.cn.p2p.litagation.constant.LawConstant;
-import lombok.AllArgsConstructor;
+import com.xinan.cn.p2p.litagation.constant.LawCasesConstant;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -14,7 +12,7 @@ import java.util.UUID;
  * 诉讼查询公用参数
  */
 @Data
-public class LawQueryBasic implements LawConstant, Serializable {
+public class LawCasesQueryBasic implements LawCasesConstant, Serializable {
 
     /**
      * 颁发的授权 key
@@ -41,7 +39,7 @@ public class LawQueryBasic implements LawConstant, Serializable {
      */
     public String clientTime;
 
-    public LawQueryBasic() {
+    public LawCasesQueryBasic() {
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmm");
         String clientTime = simpleDateFormat.format(date);

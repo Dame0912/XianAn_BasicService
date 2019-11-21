@@ -18,7 +18,7 @@ import com.xinan.cn.p2p.litagation.bean.nifa.CompanyQueryRequest;
 import com.xinan.cn.p2p.litagation.bean.nifa.LawDetailResponse;
 import com.xinan.cn.p2p.litagation.bean.nifa.LawResultResponse;
 import com.xinan.cn.p2p.litagation.bean.nifa.NaturalQueryRequest;
-import com.xinan.cn.p2p.litagation.constant.LawConstant;
+import com.xinan.cn.p2p.litagation.constant.LawCasesConstant;
 import com.xinan.cn.p2p.litagation.service.intf.LawInfoQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant {
+public class LawCasesInfoQueryServiceImpl implements LawInfoQueryService, LawCasesConstant {
 
     @Autowired
     private OpenLoanService openLoanService;
@@ -46,7 +46,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
 
     @Override
     public boolean verifyAllUnclearLawInfo(long time) {
-        log.info("LawInfoQueryServiceImpl.verifyAllUnclearLawInfo 执行开始...");
+        log.info("LawCasesInfoQueryServiceImpl.verifyAllUnclearLawInfo 执行开始...");
         // 1、请求 open-asset 获取所有未结清人员信息
         boolean flag = true;
         int page = 1;
@@ -76,13 +76,13 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
         if (count >= COUNT_LIMIT) {
             flag = false;
         }
-        log.info("LawInfoQueryServiceImpl.verifyAllUnclearLawInfo 执行结束，flag:" + flag + ", 总次数count:" + count);
+        log.info("LawCasesInfoQueryServiceImpl.verifyAllUnclearLawInfo 执行结束，flag:" + flag + ", 总次数count:" + count);
         return flag;
     }
 
     @Override
     public LawApiQueryResponse queryLoanerCase(LawApiQueryRequest lawApiQueryRequest) {
-        log.info("LawInfoQueryServiceImpl.queryLoanerCase, 开始, data:" + JSON.toJSONString(lawApiQueryRequest));
+        log.info("LawCasesInfoQueryServiceImpl.queryLoanerCase, 开始, data:" + JSON.toJSONString(lawApiQueryRequest));
         LawApiQueryResponse lawApiQueryResponse = new LawApiQueryResponse();
         lawApiQueryResponse.setBusinessId(lawApiQueryRequest.getBusinessId());
         lawApiQueryResponse.setUserId(lawApiQueryRequest.getUserId());
@@ -91,11 +91,11 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
             checkRequestParam(lawApiQueryRequest);
             casesLoanerInfo = fdUserMapper.queryOne(lawApiQueryRequest);
             if (null == casesLoanerInfo) {
-                log.info("LawInfoQueryServiceImpl.queryLoanerCase, 库中没有对应诉讼信息");
+                log.info("LawCasesInfoQueryServiceImpl.queryLoanerCase, 库中没有对应诉讼信息");
                 casesLoanerInfo = sendRequest(lawApiQueryRequest);
                 fdUserMapper.insertOne(casesLoanerInfo);
             } else if (!DateUtil.isLatestDate(casesLoanerInfo.getUpdatedAt(), DAYS_LIMIT)) {
-                log.info("LawInfoQueryServiceImpl.queryLoanerCase, 库中对应诉讼信息已过期");
+                log.info("LawCasesInfoQueryServiceImpl.queryLoanerCase, 库中对应诉讼信息已过期");
                 casesLoanerInfo = sendRequest(lawApiQueryRequest);
                 fdUserMapper.updateOne(casesLoanerInfo);
             }
@@ -105,20 +105,20 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
             lawApiQueryResponse.setResponseCode(LawApiResponceCodeConst.CODE_0000);
             lawApiQueryResponse.setResponseMsg(LawApiResponceCodeConst.CODE_0000_CN);
         } catch (AppException e) {
-            log.error("LawInfoQueryServiceImpl.queryLoanerCase, 异常1，e:" + e.getMessage());
+            log.error("LawCasesInfoQueryServiceImpl.queryLoanerCase, 异常1，e:" + e.getMessage());
             lawApiQueryResponse.setResponseCode(e.getErrorCode());
             lawApiQueryResponse.setResponseMsg(e.getMessage());
         } catch (Exception ex) {
-            log.error("LawInfoQueryServiceImpl.queryLoanerCase, 异常2，e:" + ex.getMessage());
+            log.error("LawCasesInfoQueryServiceImpl.queryLoanerCase, 异常2，e:" + ex.getMessage());
             lawApiQueryResponse.setResponseCode(LawApiResponceCodeConst.CODE_9999);
             lawApiQueryResponse.setResponseMsg(LawApiResponceCodeConst.CODE_9999_CN);
         }
-        log.info("LawInfoQueryServiceImpl.queryLoanerCase, 结束, data:" + JSON.toJSONString(lawApiQueryResponse));
+        log.info("LawCasesInfoQueryServiceImpl.queryLoanerCase, 结束, data:" + JSON.toJSONString(lawApiQueryResponse));
         return lawApiQueryResponse;
     }
 
     private void handleUnclearLawInfo(List<LawLoanerBasicInfo> lawLoanerBasicInfoList) {
-        log.info("LawInfoQueryServiceImpl.handleUnclearLawInfo，开始，请求数量size:" + lawLoanerBasicInfoList.size());
+        log.info("LawCasesInfoQueryServiceImpl.handleUnclearLawInfo，开始，请求数量size:" + lawLoanerBasicInfoList.size());
         // 存在的caseInfo
         List<LawLoanerBasicInfo> existLoaners = fdUserMapper.batchQueryLoaner(lawLoanerBasicInfoList);
         // 过期的caseInfo
@@ -135,7 +135,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
             updateCases.add(sendRequest(loanerBasicInfo));
         }
 
-        log.info("LawInfoQueryServiceImpl.handleUnclearLawInfo，请求中互金成功，准备入库");
+        log.info("LawCasesInfoQueryServiceImpl.handleUnclearLawInfo，请求中互金成功，准备入库");
         // 入库
         if (CollectionUtils.isNotEmpty(insertCases)) {
             fdUserMapper.batchInsert(insertCases);
@@ -143,7 +143,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
         if (CollectionUtils.isNotEmpty(updateCases)) {
             fdUserMapper.batchUpdate(updateCases);
         }
-        log.info("LawInfoQueryServiceImpl.handleUnclearLawInfo，结束，入库成功");
+        log.info("LawCasesInfoQueryServiceImpl.handleUnclearLawInfo，结束，入库成功");
     }
 
     private void removeLoaners(List<LawLoanerBasicInfo> largeList, List<LawLoanerBasicInfo> smallList) {
@@ -184,7 +184,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
     }
 
     private CasesLoanerInfo sendRequest(LawLoanerBasicInfo loanerInfo) {
-        log.info("LawInfoQueryServiceImpl.sendRequest, 开始...");
+        log.info("LawCasesInfoQueryServiceImpl.sendRequest, 开始...");
         CasesRequestRecord casesRequestRecord = new CasesRequestRecord();
         casesRequestRecord.setUserId(loanerInfo.getUserId());
         casesRequestRecord.setStatus(LawReqRecodeConst.WAITING);
@@ -201,7 +201,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
                 casesRequestRecord.setBusinessId(naturalQueryRequest.getTransactionNo());
                 casesRequestRecordMapper.insert(casesRequestRecord);
 
-                // reponseStr = LawQueryNifaHelper.sendPost(LawRequestConst.NATRUAL_PATH, naturalQueryRequest);
+                // reponseStr = LawCasesQueryNifaHelper.sendPost(LawRequestConst.NATRUAL_PATH, naturalQueryRequest);
                 reponseStr = "{\"code\":\"0\",\"data\":\"{\\\"count\\\":{\\\"civil_count_total\\\":85,\\\"is_sxbzxr\\\":0,\\\"larq_stat\\\":\\\"2002(1),2003(3),2004(1),2007(1),2008(2),2009(2),2010(1),2012(3),2013(1),2014(7),2015(5),2016(10),2017(18),2018(22),2019(24),其他(1)\\\",\\\"money_other\\\":8,\\\"count_yuangao\\\":22,\\\"money_jie_beigao\\\":11,\\\"administrative_count_total\\\":5,\\\"count_other\\\":14,\\\"criminal_count_total\\\":0,\\\"has_cases\\\":1,\\\"count_beigao\\\":66,\\\"count_jie_beigao\\\":57,\\\"money_yuangao\\\":12,\\\"money_beigao\\\":12}}\",\"message\":\"成功\",\"requestId\":\"e0237c53605a4449abe6df89b62b913f\",\"result\":\"0\"}";
             } else if (LawUserTypeConst.COMPANY.equals(userType)) {
                 CompanyQueryRequest companyQueryRequest = new CompanyQueryRequest(loanerInfo.getName());
@@ -210,7 +210,7 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
                 casesRequestRecord.setBusinessId(companyQueryRequest.getTransactionNo());
                 casesRequestRecordMapper.insert(casesRequestRecord);
 
-                // reponseStr = LawQueryNifaHelper.sendPost(LawRequestConst.ORG_PATH, companyQueryRequest,casesRequestRecord);
+                // reponseStr = LawCasesQueryNifaHelper.sendPost(LawRequestConst.ORG_PATH, companyQueryRequest,casesRequestRecord);
                 reponseStr = "{\"code\":\"0\",\"data\":\"{\\\"count\\\":{\\\"civil_count_total\\\":14,\\\"is_sxbzxr\\\":1,\\\"larq_stat\\\":\\\"2015(6),2016(10),2017(6),2018(3),2019(3)\\\",\\\"money_other\\\":10,\\\"count_yuangao\\\":0,\\\"money_jie_beigao\\\":12,\\\"administrative_count_total\\\":0,\\\"count_other\\\":1,\\\"criminal_count_total\\\":0,\\\"has_cases\\\":1,\\\"count_beigao\\\":27,\\\"count_jie_beigao\\\":25,\\\"money_yuangao\\\":0,\\\"money_beigao\\\":12}}\",\"message\":\"成功\",\"requestId\":\"e4c61406540e41158bc483f9b34225ae\",\"result\":\"0\"}";
             }
 
@@ -245,19 +245,19 @@ public class LawInfoQueryServiceImpl implements LawInfoQueryService, LawConstant
                 return casesLoanerInfo;
             }
         } catch (AppException e) {
-            log.error("LawInfoQueryServiceImpl.sendRequest, 异常1，e:" + e.getMessage());
+            log.error("LawCasesInfoQueryServiceImpl.sendRequest, 异常1，e:" + e.getMessage());
             casesRequestRecord.setStatus(LawReqRecodeConst.FAIL);
             casesRequestRecord.setResponseCodeMsg(e.getMessage());
             casesRequestRecordMapper.update(casesRequestRecord);
             throw new AppException(LawApiResponceCodeConst.CODE_9997, StringUtils.isBlank(e.getMessage()) ? LawApiResponceCodeConst.CODE_9997_CN : e.getMessage());
         } catch (IllegalAccessException e) {
-            log.error("LawInfoQueryServiceImpl.sendRequest, 异常2，e:" + e.getMessage());
+            log.error("LawCasesInfoQueryServiceImpl.sendRequest, 异常2，e:" + e.getMessage());
             throw new AppException(LawApiResponceCodeConst.CODE_9999, LawApiResponceCodeConst.CODE_9999_CN);
         } catch (InvocationTargetException e) {
-            log.error("LawInfoQueryServiceImpl.sendRequest, 异常3，e:" + e.getMessage());
+            log.error("LawCasesInfoQueryServiceImpl.sendRequest, 异常3，e:" + e.getMessage());
             throw new AppException(LawApiResponceCodeConst.CODE_9999, LawApiResponceCodeConst.CODE_9999_CN);
         }
-        log.info("LawInfoQueryServiceImpl.sendRequest, 结束...");
+        log.info("LawCasesInfoQueryServiceImpl.sendRequest, 结束...");
         return casesLoanerInfo;
     }
 

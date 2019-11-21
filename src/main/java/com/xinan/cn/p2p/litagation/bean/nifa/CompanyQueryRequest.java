@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyQueryRequest extends LawQueryBasic implements Serializable {
+public class CompanyQueryRequest extends LawCasesQueryBasic implements Serializable {
     /**
      * 名称（3des 加密后做 base64 编码）
      */

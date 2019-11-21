@@ -147,7 +147,7 @@
         FROM loan_op_user.cases_loaner_info
         WHERE user_id IN
         <foreach collection="lawLoanerBasicInfoList" item="lawLoanerInfo" open="(" close=")" separator=",">
-            user_id = #{lawLoanerInfo.userId}
+            #{lawLoanerInfo.userId}
         </foreach>
     </select>
 

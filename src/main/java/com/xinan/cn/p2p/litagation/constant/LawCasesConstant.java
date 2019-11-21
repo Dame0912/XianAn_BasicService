@@ -3,7 +3,7 @@ package com.xinan.cn.p2p.litagation.constant;
 /**
  * 涉诉查询常量
  */
-public interface LawConstant {
+public interface LawCasesConstant {
 
     String ZERO = "0";
 
