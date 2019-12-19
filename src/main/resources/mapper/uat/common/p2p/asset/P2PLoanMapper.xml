@@ -41,7 +41,7 @@
     <select id="getByLoanId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from xinan_uat_asset.loan WHERE loan_id = #{loanId}
+        from xinan_asset.loan WHERE loan_id = #{loanId}
     </select>
 
 </mapper>

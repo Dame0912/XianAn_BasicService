@@ -36,7 +36,7 @@
     <select id="getBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from loan_opuat_core.invest WHERE sku_id = #{skuId} and status != 400
+        from loan_op_core.invest WHERE sku_id = #{skuId} and status != 400
     </select>
 
 

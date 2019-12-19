@@ -23,7 +23,7 @@
     <select id="getBySkuId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from xinan_uat_financial.loans_base WHERE sku_id = #{loanId}
+        from xinan_financial.loans_base WHERE sku_id = #{loanId}
     </select>
 
 </mapper>

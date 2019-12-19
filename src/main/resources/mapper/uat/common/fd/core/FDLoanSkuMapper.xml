@@ -18,7 +18,7 @@
     <select id="getByLoanId" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from loan_opuat_core.loan_sku_mapping WHERE loan_id = #{loanId} and deleted_at = 0
+        from loan_op_core.loan_sku_mapping WHERE loan_id = #{loanId} and deleted_at = 0
     </select>
 
 

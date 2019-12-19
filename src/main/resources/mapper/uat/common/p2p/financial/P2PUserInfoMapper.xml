@@ -16,7 +16,7 @@
     <select id="getUserInfo" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
-        from xinan_uat_financial.user_info WHERE uuid = #{actId}
+        from xinan_financial.user_info WHERE uuid = #{actId}
     </select>
 
 </mapper>
